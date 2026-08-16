@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tasis — Company Formation & Business Management</title>
+<meta name="description" content="Set up a new company or manage changes to an existing one.">
+<meta name="theme-color" content="#0f1f3d">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Tasis">
+<style>
+*{box-sizing:border-box;}
+:root{
+  --navy:#0f1f3d;
+  --navy-dark:#0a1730;
+  --navy-light:#1b3462;
+  --gold:#b8901f;
+  --gold-light:#d4af37;
+  --bg:#f5f6fa;
+  --card:#ffffff;
+  --border:#e3e6ee;
+  --text:#182238;
+  --text-dim:#636d84;
+  --text-faint:#9aa2b6;
+  --green:#187a4c;
+  --green-bg:#e5f6ed;
+  --amber:#a86a08;
+  --amber-bg:#fcf1dc;
+  --blue:#2050b8;
+  --blue-bg:#e8eefb;
+  --red:#c22e2e;
+  --red-bg:#fce9e9;
+  --gray:#5c6478;
+  --gray-bg:#edeef3;
+  --radius:12px;
+  --shadow:0 1px 2px rgba(15,31,61,.06), 0 6px 20px rgba(15,31,61,.06);
+}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4{margin:0 0 4px;font-weight:800;color:var(--navy);}
+p{margin:0 0 10px;}
+a{color:var(--blue);}
+button{font-family:inherit;}
+input,select,textarea{font-family:inherit;font-size:.95rem;}
+
+/* ---------- topbar ---------- */
+.topbar{position:sticky;top:0;z-index:60;background:var(--navy);color:#fff;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--shadow);gap:10px;flex-wrap:wrap;}
+.brand{display:flex;align-items:baseline;gap:7px;font-weight:800;font-size:1.28rem;letter-spacing:.4px;cursor:pointer;color:#fff;text-decoration:none;}
+.brand .mark{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--gold-light),var(--gold));color:var(--navy-dark);font-weight:900;font-size:.85rem;}
+.ver{font-size:.6rem;opacity:.45;font-weight:600;margin-left:2px;}
+.topnav{display:flex;align-items:center;gap:8px;font-size:.82rem;}
+.topnav a{color:rgba(255,255,255,.78);text-decoration:none;padding:7px 12px;border-radius:20px;font-weight:600;}
+.topnav a:hover{background:rgba(255,255,255,.1);color:#fff;}
+.topnav a.active{background:rgba(255,255,255,.14);color:#fff;}
+
+/* ---------- layout ---------- */
+.wrap{max-width:760px;margin:0 auto;padding:26px 16px 90px;}
+.wrap-wide{max-width:1180px;}
+.pagehead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap;}
+.pagehead .sub{color:var(--text-dim);font-size:.88rem;margin-top:2px;}
+
+/* ---------- cards / surfaces ---------- */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:16px;}
+.card.pad-lg{padding:26px;}
+.section-title{font-size:.72rem;font-weight:800;letter-spacing:.7px;text-transform:uppercase;color:var(--text-faint);margin:0 0 12px;}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:10px;padding:11px 18px;font-size:.88rem;font-weight:700;cursor:pointer;text-decoration:none;transition:transform .08s ease, opacity .15s ease;}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:linear-gradient(135deg,var(--gold-light),var(--gold));color:var(--navy-dark);}
+.btn-primary:hover{opacity:.92;}
+.btn-navy{background:var(--navy);color:#fff;}
+.btn-navy:hover{background:var(--navy-light);}
+.btn-ghost{background:var(--gray-bg);color:var(--text);}
+.btn-ghost:hover{background:#e2e4ec;}
+.btn-outline{background:transparent;color:var(--navy);border:1.5px solid var(--border);}
+.btn-outline:hover{border-color:var(--navy);}
+.btn-danger{background:var(--red-bg);color:var(--red);}
+.btn-danger:hover{background:#f7d6d6;}
+.btn-green{background:var(--green-bg);color:var(--green);}
+.btn-green:hover{background:#d3eedd;}
+.btn-sm{padding:7px 12px;font-size:.78rem;border-radius:8px;}
+.btn-block{width:100%;}
+.btn[disabled]{opacity:.45;cursor:not-allowed;}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;}
+
+/* ---------- forms ---------- */
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--text-dim);margin-bottom:6px;}
+.field .hint{font-size:.76rem;color:var(--text-faint);margin-top:5px;}
+.field .err{font-size:.78rem;color:var(--red);margin-top:5px;font-weight:600;}
+.input,.select,.textarea{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:11px 13px;font-size:.92rem;color:var(--text);background:#fff;outline:none;}
+.input:focus,.select:focus,.textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(184,144,31,.14);}
+.textarea{resize:vertical;min-height:80px;}
+.input.bad,.select.bad,.textarea.bad{border-color:var(--red);}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+@media(max-width:620px){.row2,.row3{grid-template-columns:1fr;}}
+.radiogroup{display:flex;gap:10px;flex-wrap:wrap;}
+.radiopill{border:1.5px solid var(--border);border-radius:9px;padding:9px 14px;font-size:.85rem;font-weight:600;cursor:pointer;color:var(--text-dim);user-select:none;}
+.radiopill input{margin-right:6px;}
+.radiopill.checked{border-color:var(--gold);background:#fdf7e8;color:var(--navy);}
+.checkline{display:flex;align-items:center;gap:8px;font-size:.86rem;font-weight:600;color:var(--text);cursor:pointer;user-select:none;}
+.checkline input{width:17px;height:17px;}
+
+/* ---------- badges ---------- */
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:.68rem;font-weight:800;letter-spacing:.3px;text-transform:uppercase;padding:5px 10px;border-radius:20px;white-space:nowrap;}
+.badge-draft{background:var(--gray-bg);color:var(--gray);}
+.badge-submitted{background:var(--blue-bg);color:var(--blue);}
+.badge-under_review{background:var(--amber-bg);color:var(--amber);}
+.badge-approved{background:var(--green-bg);color:var(--green);}
+.badge-rejected{background:var(--red-bg);color:var(--red);}
+.badge-pending{background:var(--amber-bg);color:var(--amber);}
+.dot{width:7px;height:7px;border-radius:50%;background:currentColor;}
+
+/* ---------- wizard steps ---------- */
+.steps{display:flex;justify-content:space-between;margin-bottom:24px;gap:4px;}
+.step{flex:1;text-align:center;position:relative;}
+.step .circ{width:30px;height:30px;border-radius:50%;background:var(--gray-bg);color:var(--text-faint);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.82rem;margin:0 auto 6px;border:2px solid transparent;}
+.step .lbl{font-size:.66rem;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.3px;}
+.step.active .circ{background:var(--navy);color:#fff;}
+.step.active .lbl{color:var(--navy);}
+.step.done .circ{background:var(--green);color:#fff;}
+.step.done .lbl{color:var(--green);}
+.step:not(:last-child):after{content:'';position:absolute;top:15px;left:55%;width:90%;height:2px;background:var(--border);z-index:0;}
+.step.done:not(:last-child):after{background:var(--green);}
+
+/* ---------- company / list cards ---------- */
+.co-card{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:18px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:12px;cursor:pointer;}
+.co-card:hover{border-color:var(--gold);}
+.co-card h3{font-size:1.02rem;margin-bottom:4px;}
+.co-card .meta{font-size:.78rem;color:var(--text-dim);}
+.empty{text-align:center;padding:50px 20px;color:var(--text-dim);}
+.empty .big{font-size:2.4rem;margin-bottom:10px;}
+
+/* ---------- activity chips ---------- */
+.chiplist{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.chip{display:inline-flex;align-items:center;gap:7px;background:var(--navy);color:#fff;padding:7px 8px 7px 13px;border-radius:20px;font-size:.8rem;font-weight:600;}
+.chip button{background:rgba(255,255,255,.18);border:none;color:#fff;width:18px;height:18px;border-radius:50%;cursor:pointer;font-size:.72rem;line-height:1;}
+.actcard{border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;margin-bottom:8px;cursor:pointer;display:flex;align-items:flex-start;gap:10px;}
+.actcard:hover{border-color:var(--gold);background:#fdf9ee;}
+.actcard.selected{border-color:var(--green);background:var(--green-bg);}
+.actcard .code{font-size:.66rem;font-weight:800;color:var(--text-faint);letter-spacing:.3px;}
+.actcard .name{font-weight:700;font-size:.88rem;color:var(--text);}
+.actcard .grp{font-size:.72rem;color:var(--text-dim);}
+.actcheck{width:18px;height:18px;border-radius:5px;border:2px solid var(--border);flex:0 0 auto;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#fff;}
+.actcard.selected .actcheck{background:var(--green);border-color:var(--green);}
+.cat-hd{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--text-faint);margin:16px 0 8px;}
+
+/* ---------- shareholder rows ---------- */
+.sh-card{border:1.5px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:14px;position:relative;}
+.sh-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.sh-head b{font-size:.86rem;color:var(--navy);}
+.pctbar-wrap{position:sticky;bottom:0;background:linear-gradient(0deg,var(--bg) 70%,transparent);padding:14px 0 4px;}
+.pctbar{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:12px 16px;box-shadow:var(--shadow);}
+.pctbar.ok{border-color:var(--green);}
+.pctbar.bad{border-color:var(--red);}
+.pctnum{font-weight:800;font-size:1rem;}
+.pctnum.ok{color:var(--green);}
+.pctnum.bad{color:var(--red);}
+.filebtn{display:inline-flex;align-items:center;gap:8px;border:1.5px dashed var(--border);border-radius:9px;padding:10px 14px;font-size:.82rem;font-weight:600;color:var(--text-dim);cursor:pointer;background:#fbfbfd;}
+.filebtn:hover{border-color:var(--gold);color:var(--navy);}
+.filepreview{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:.8rem;color:var(--text-dim);}
+.filepreview img{width:44px;height:44px;object-fit:cover;border-radius:6px;border:1px solid var(--border);}
+.filepreview .rm{color:var(--red);cursor:pointer;font-weight:700;}
+
+/* ---------- table ---------- */
+table.tbl{width:100%;border-collapse:collapse;font-size:.84rem;}
+table.tbl th{text-align:left;font-size:.68rem;text-transform:uppercase;letter-spacing:.3px;color:var(--text-faint);padding:8px 10px;border-bottom:2px solid var(--border);}
+table.tbl td{padding:10px 10px;border-bottom:1px solid var(--border);vertical-align:middle;}
+table.tbl tr:last-child td{border-bottom:none;}
+
+/* ---------- timeline ---------- */
+.timeline{list-style:none;margin:0;padding:0;}
+.timeline li{display:flex;gap:12px;padding-bottom:16px;position:relative;}
+.timeline li:not(:last-child):before{content:'';position:absolute;left:6px;top:18px;bottom:0;width:2px;background:var(--border);}
+.timeline .tdot{width:14px;height:14px;border-radius:50%;background:var(--border);flex:0 0 auto;margin-top:3px;}
+.timeline li.on .tdot{background:var(--gold);}
+.timeline .tlabel{font-weight:700;font-size:.86rem;color:var(--text);}
+.timeline .tdate{font-size:.74rem;color:var(--text-faint);}
+
+/* ---------- misc ---------- */
+.divider{height:1px;background:var(--border);margin:18px 0;}
+.notebox{background:var(--amber-bg);border:1px solid #f0dba9;color:#7a5405;border-radius:10px;padding:12px 14px;font-size:.82rem;margin-bottom:16px;}
+.notebox.blue{background:var(--blue-bg);border-color:#c6d7f7;color:#173a8c;}
+.notebox.red{background:var(--red-bg);border-color:#f3c4c4;color:#8c1f1f;}
+.searchbar{position:relative;margin-bottom:12px;}
+.searchbar input{padding-left:36px;}
+.searchbar .ic{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-faint);}
+.tabs{display:flex;gap:6px;margin-bottom:18px;border-bottom:2px solid var(--border);overflow-x:auto;}
+.tab{padding:10px 16px;font-size:.82rem;font-weight:700;color:var(--text-dim);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;}
+.tab.active{color:var(--navy);border-color:var(--gold);}
+.filter-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center;}
+.pillbtn{border:1.5px solid var(--border);background:#fff;border-radius:20px;padding:7px 14px;font-size:.78rem;font-weight:700;cursor:pointer;color:var(--text-dim);}
+.pillbtn.active{background:var(--navy);border-color:var(--navy);color:#fff;}
+.doclink{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;font-weight:600;color:var(--blue);text-decoration:none;cursor:pointer;}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:560px){.compare{grid-template-columns:1fr;}}
+.compare .box{border:1.5px solid var(--border);border-radius:10px;padding:14px;}
+.compare .box h4{font-size:.7rem;text-transform:uppercase;letter-spacing:.4px;color:var(--text-faint);margin-bottom:8px;}
+.toast-wrap{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:200;display:flex;flex-direction:column;gap:8px;align-items:center;width:100%;pointer-events:none;}
+.toast{background:var(--navy-dark);color:#fff;padding:11px 20px;border-radius:30px;font-size:.85rem;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.25);animation:toastin .2s ease;}
+.toast.err{background:var(--red);}
+.toast.ok{background:var(--green);}
+@keyframes toastin{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.modal-bg{position:fixed;inset:0;background:rgba(10,20,40,.55);z-index:150;display:flex;align-items:center;justify-content:center;padding:20px;}
+.modal{background:#fff;border-radius:16px;padding:24px;max-width:440px;width:100%;box-shadow:0 24px 70px rgba(0,0,0,.35);}
+.gate{min-height:70vh;display:flex;align-items:center;justify-content:center;}
+.gate .card{max-width:380px;width:100%;text-align:center;}
+.footer-note{text-align:center;color:var(--text-faint);font-size:.72rem;margin-top:30px;}
+.linklike{background:none;border:none;color:var(--blue);font-weight:700;cursor:pointer;font-size:.84rem;padding:0;}
+.act-search-list{max-height:360px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;padding:10px;}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+@media(max-width:700px){.stat-row{grid-template-columns:repeat(2,1fr);}}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center;}
+.stat .num{font-size:1.5rem;font-weight:800;color:var(--navy);}
+.stat .lbl{font-size:.7rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.3px;font-weight:700;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="#" class="brand"><span class="mark">T</span>TASIS<span class="ver">v1.0</span></a>
+  <div class="topnav" id="topnav">
+    <a href="#" data-nav="home">My Companies</a>
+    <a href="#admin" data-nav="admin">Admin</a>
+  </div>
+</div>
+
+<div id="app"></div>
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+/* =========================================================
+   TASIS — Phase 1 prototype
+   All data lives in localStorage. No backend, no real auth.
+   Admin area is gated by a local passcode only (ADMIN_PASSCODE
+   below) — this is NOT security, just a placeholder until the
+   real Supabase-backed Phase 2 build.
+   ========================================================= */
+var ADMIN_PASSCODE = 'tasis-admin';
+var DB_KEY = 'tasis_data_v1';
+var ADMIN_SESSION_KEY = 'tasis_admin_ok';
+
+/* ---------------- activities dataset ---------------- */
+/* c = reference code (internal, NOT an official ISIC/MOIC code — confirm
+   the real classification during formal government filing), n = name,
+   g = category group, k = keywords used by the recommender */
+var ACTIVITIES = [
+{c:'GT-01',n:'General Trading (Import, Export & Local Distribution)',g:'General Trading',k:['trading','general trade','import','export','wholesale','distribution','goods']},
+{c:'GT-02',n:'Wholesale of Consumer Goods',g:'General Trading',k:['wholesale','bulk','consumer goods','distributor']},
+{c:'GT-03',n:'Trading in Building Materials',g:'General Trading',k:['building materials','construction supplies','cement','tiles','hardware']},
+{c:'GT-04',n:'Trading in Electronics & Appliances',g:'General Trading',k:['electronics','appliances','gadgets','devices']},
+{c:'GT-05',n:'Trading in Furniture & Home Fittings',g:'General Trading',k:['furniture','home fittings','decor','interiors']},
+{c:'GT-06',n:'Trading in Textiles & Fabrics',g:'General Trading',k:['textiles','fabric','cloth','garments wholesale']},
+{c:'GT-07',n:'Trading in Machinery & Industrial Equipment',g:'General Trading',k:['machinery','industrial equipment','tools','spare parts']},
+{c:'GT-08',n:'Trading in Foodstuff (Wholesale)',g:'General Trading',k:['foodstuff','food wholesale','groceries bulk']},
+{c:'GT-09',n:'Trading in Cosmetics & Perfumes',g:'General Trading',k:['cosmetics','perfumes','fragrance','beauty products trade']},
+{c:'GT-10',n:'Trading in Office Supplies & Stationery',g:'General Trading',k:['office supplies','stationery','paper products']},
+
+{c:'IE-01',n:'Import & Export Agency Services',g:'Import & Export',k:['import export agency','trade agent','commission agent']},
+{c:'IE-02',n:'Re-export & Free Zone Trading',g:'Import & Export',k:['re-export','free zone','transit trade','logistics trade']},
+{c:'IE-03',n:'Customs Clearance & Freight Forwarding',g:'Import & Export',k:['customs clearance','freight forwarding','shipping agent','clearing agent']},
+{c:'IE-04',n:'International Sourcing & Procurement',g:'Import & Export',k:['sourcing','procurement','purchasing agent']},
+
+{c:'RT-01',n:'Retail Sale of Clothing & Fashion',g:'Retail Trade',k:['clothing store','fashion retail','boutique','apparel']},
+{c:'RT-02',n:'Retail Sale of Groceries & Supermarket',g:'Retail Trade',k:['grocery','supermarket','minimarket','convenience store']},
+{c:'RT-03',n:'Retail Sale of Electronics & Mobile Phones',g:'Retail Trade',k:['electronics shop','mobile phone shop','gadget store']},
+{c:'RT-04',n:'Retail Sale of Furniture & Home Decor',g:'Retail Trade',k:['furniture shop','home decor store','interior shop']},
+{c:'RT-05',n:'Retail Sale of Books, Gifts & Stationery',g:'Retail Trade',k:['bookshop','gift shop','stationery store']},
+{c:'RT-06',n:'Retail Sale of Toys & Baby Products',g:'Retail Trade',k:['toy shop','baby products','kids store']},
+{c:'RT-07',n:'Retail Sale of Sporting Goods',g:'Retail Trade',k:['sporting goods','sportswear','gym equipment shop']},
+{c:'RT-08',n:'Retail Sale of Jewelry & Watches',g:'Retail Trade',k:['jewelry shop','watches','gold trading retail']},
+{c:'RT-09',n:'Retail Sale of Perfumes & Cosmetics',g:'Retail Trade',k:['perfume shop','cosmetics store','beauty shop']},
+{c:'RT-10',n:'Pharmacy & Retail Sale of Medical Supplies',g:'Retail Trade',k:['pharmacy','drug store','medical supplies retail']},
+{c:'RT-11',n:'Flower Shop & Florist',g:'Retail Trade',k:['florist','flower shop','bouquet']},
+{c:'RT-12',n:'Pet Shop & Pet Supplies',g:'Retail Trade',k:['pet shop','pet supplies','animal store']},
+
+{c:'IT-01',n:'Software Development & Programming',g:'IT & Software',k:['software development','programming','coding','app development','developer']},
+{c:'IT-02',n:'Mobile & Web Application Development',g:'IT & Software',k:['mobile app','web app','website development','app builder']},
+{c:'IT-03',n:'IT Consultancy & Systems Integration',g:'IT & Software',k:['it consultancy','systems integration','technology consulting']},
+{c:'IT-04',n:'Cloud, Hosting & Data Centre Services',g:'IT & Software',k:['cloud services','hosting','server','data centre']},
+{c:'IT-05',n:'Cybersecurity Services',g:'IT & Software',k:['cybersecurity','information security','penetration testing']},
+{c:'IT-06',n:'IT Hardware Sales & Maintenance',g:'IT & Software',k:['computer maintenance','it hardware','pc repair']},
+{c:'IT-07',n:'Artificial Intelligence & Data Analytics Services',g:'IT & Software',k:['artificial intelligence','ai','data analytics','machine learning']},
+{c:'IT-08',n:'Game Development',g:'IT & Software',k:['game development','video games','gaming studio']},
+
+{c:'MC-01',n:'General Management Consultancy',g:'Management & Consultancy',k:['management consultancy','business consulting','strategy consulting']},
+{c:'MC-02',n:'Human Resources & Recruitment Consultancy',g:'Management & Consultancy',k:['hr consultancy','recruitment','staffing agency','manpower']},
+{c:'MC-03',n:'Business Setup & Corporate Services',g:'Management & Consultancy',k:['business setup','company formation','corporate services','pro services']},
+{c:'MC-04',n:'Training & Development Consultancy',g:'Management & Consultancy',k:['training consultancy','corporate training','coaching']},
+{c:'MC-05',n:'Market Research & Feasibility Studies',g:'Management & Consultancy',k:['market research','feasibility study','business plan']},
+{c:'MC-06',n:'Quality Management & ISO Consultancy',g:'Management & Consultancy',k:['iso consultancy','quality management','certification consulting']},
+
+{c:'MA-01',n:'Advertising Agency Services',g:'Marketing & Media',k:['advertising agency','ad agency','promotions']},
+{c:'MA-02',n:'Digital Marketing & Social Media Management',g:'Marketing & Media',k:['digital marketing','social media','seo','online marketing']},
+{c:'MA-03',n:'Graphic Design & Branding',g:'Marketing & Media',k:['graphic design','branding','logo design','identity design']},
+{c:'MA-04',n:'Photography & Videography Services',g:'Marketing & Media',k:['photography','videography','photo studio','video production']},
+{c:'MA-05',n:'Public Relations Services',g:'Marketing & Media',k:['public relations','pr agency','media relations']},
+{c:'MA-06',n:'Printing & Publishing Services',g:'Marketing & Media',k:['printing press','publishing','print shop']},
+{c:'MA-07',n:'Media Production & Content Creation',g:'Marketing & Media',k:['media production','content creation','film production']},
+
+{c:'FB-01',n:'Restaurant & Full-Service Dining',g:'Restaurants & Catering',k:['restaurant','dining','eatery']},
+{c:'FB-02',n:'Cafe & Coffee Shop',g:'Restaurants & Catering',k:['cafe','coffee shop','coffeehouse']},
+{c:'FB-03',n:'Fast Food & Takeaway',g:'Restaurants & Catering',k:['fast food','takeaway','quick service restaurant']},
+{c:'FB-04',n:'Bakery & Confectionery Shop',g:'Restaurants & Catering',k:['bakery','confectionery','pastry shop','cakes']},
+{c:'FB-05',n:'Catering Services',g:'Restaurants & Catering',k:['catering','event catering','food service']},
+{c:'FB-06',n:'Food Truck & Mobile Food Vending',g:'Restaurants & Catering',k:['food truck','mobile food','street food']},
+{c:'FB-07',n:'Juice Bar & Beverage Kiosk',g:'Restaurants & Catering',k:['juice bar','beverage kiosk','smoothie']},
+
+{c:'RE-01',n:'Real Estate Brokerage',g:'Real Estate',k:['real estate brokerage','property broker','realtor']},
+{c:'RE-02',n:'Property Management Services',g:'Real Estate',k:['property management','facility leasing','building management']},
+{c:'RE-03',n:'Real Estate Development',g:'Real Estate',k:['real estate development','property developer']},
+{c:'RE-04',n:'Property Valuation & Appraisal',g:'Real Estate',k:['property valuation','appraisal','asset valuation']},
+{c:'RE-05',n:'Real Estate Investment & Holding',g:'Real Estate',k:['real estate investment','property holding','asset holding company']},
+
+{c:'CN-01',n:'General Building Construction & Contracting',g:'Construction & Contracting',k:['construction','building contractor','general contracting']},
+{c:'CN-02',n:'Interior Design & Fit-Out Contracting',g:'Construction & Contracting',k:['interior design','fit out','interior contracting']},
+{c:'CN-03',n:'Electrical Contracting & Installation',g:'Construction & Contracting',k:['electrical contractor','wiring','electrical installation']},
+{c:'CN-04',n:'Plumbing & Sanitary Contracting',g:'Construction & Contracting',k:['plumbing contractor','sanitary works']},
+{c:'CN-05',n:'HVAC & Air Conditioning Contracting',g:'Construction & Contracting',k:['hvac','air conditioning','ac contractor']},
+{c:'CN-06',n:'Painting & Decorating Contracting',g:'Construction & Contracting',k:['painting contractor','decorating']},
+{c:'CN-07',n:'Landscaping & Gardening Contracting',g:'Construction & Contracting',k:['landscaping','gardening','garden maintenance']},
+{c:'CN-08',n:'Civil & Structural Engineering Contracting',g:'Construction & Contracting',k:['civil engineering','structural engineering','infrastructure']},
+{c:'CN-09',n:'Aluminum, Glass & Metal Works Contracting',g:'Construction & Contracting',k:['aluminum works','glass works','metal fabrication']},
+
+{c:'BW-01',n:"Ladies' Beauty Salon",g:'Beauty & Wellness',k:['beauty salon','ladies salon','hair salon']},
+{c:'BW-02',n:"Men's Barber Shop & Grooming",g:'Beauty & Wellness',k:['barber shop','men grooming','barbershop']},
+{c:'BW-03',n:'Spa & Massage Therapy',g:'Beauty & Wellness',k:['spa','massage therapy','wellness centre']},
+{c:'BW-04',n:'Nail Salon & Nail Art',g:'Beauty & Wellness',k:['nail salon','manicure','pedicure']},
+{c:'BW-05',n:'Fitness Centre & Gym',g:'Beauty & Wellness',k:['gym','fitness centre','workout studio']},
+{c:'BW-06',n:'Yoga & Pilates Studio',g:'Beauty & Wellness',k:['yoga studio','pilates','meditation']},
+{c:'BW-07',n:'Cosmetic & Skincare Clinic (Non-Medical)',g:'Beauty & Wellness',k:['skincare clinic','cosmetic treatments','facial treatments']},
+
+{c:'ED-01',n:'Private Training Institute',g:'Education & Training',k:['training institute','vocational training','skills training']},
+{c:'ED-02',n:'Language Learning Centre',g:'Education & Training',k:['language centre','english classes','arabic classes']},
+{c:'ED-03',n:'Tuition & Academic Support Centre',g:'Education & Training',k:['tuition centre','tutoring','academic support']},
+{c:'ED-04',n:'Nursery & Early Childhood Education',g:'Education & Training',k:['nursery','preschool','kindergarten','daycare']},
+{c:'ED-05',n:'Driving Training Institute',g:'Education & Training',k:['driving school','driving lessons']},
+{c:'ED-06',n:'Music, Art & Hobby Classes',g:'Education & Training',k:['music lessons','art classes','hobby classes']},
+{c:'ED-07',n:'Professional Certification & Exam Coaching',g:'Education & Training',k:['certification coaching','exam preparation','professional courses']},
+
+{c:'HC-01',n:'Medical Clinic (General Practice)',g:'Healthcare',k:['medical clinic','general practitioner','doctor clinic']},
+{c:'HC-02',n:'Dental Clinic',g:'Healthcare',k:['dental clinic','dentist']},
+{c:'HC-03',n:'Physiotherapy Centre',g:'Healthcare',k:['physiotherapy','physical therapy']},
+{c:'HC-04',n:'Diagnostic & Medical Laboratory',g:'Healthcare',k:['medical laboratory','diagnostic centre','lab tests']},
+{c:'HC-05',n:'Home Healthcare & Nursing Services',g:'Healthcare',k:['home healthcare','nursing services','elderly care']},
+{c:'HC-06',n:'Veterinary Clinic',g:'Healthcare',k:['veterinary clinic','vet clinic','animal hospital']},
+{c:'HC-07',n:'Optical Centre & Eyewear',g:'Healthcare',k:['optical centre','eyewear','optician']},
+
+{c:'TL-01',n:'Freight Transport & Cargo Services',g:'Transport & Logistics',k:['freight transport','cargo','trucking']},
+{c:'TL-02',n:'Courier & Delivery Services',g:'Transport & Logistics',k:['courier','delivery service','parcel delivery']},
+{c:'TL-03',n:'Warehousing & Storage Services',g:'Transport & Logistics',k:['warehousing','storage facility','self storage']},
+{c:'TL-04',n:'Car & Vehicle Rental',g:'Transport & Logistics',k:['car rental','vehicle rental','rent a car']},
+{c:'TL-05',n:'Taxi & Passenger Transport Services',g:'Transport & Logistics',k:['taxi service','passenger transport','limousine']},
+{c:'TL-06',n:'Bus & Group Transport Services',g:'Transport & Logistics',k:['bus transport','group transport','shuttle service']},
+{c:'TL-07',n:'Shipping & Maritime Agency Services',g:'Transport & Logistics',k:['shipping agency','maritime services','vessel agency']},
+{c:'TL-08',n:'Supply Chain & Logistics Management',g:'Transport & Logistics',k:['supply chain','logistics management','3pl']},
+
+{c:'FI-01',n:'Financial & Investment Advisory',g:'Financial Services',k:['financial advisory','investment advisory','wealth management']},
+{c:'FI-02',n:'Insurance Brokerage',g:'Financial Services',k:['insurance brokerage','insurance agent']},
+{c:'FI-03',n:'Accounting & Bookkeeping Services',g:'Financial Services',k:['accounting services','bookkeeping','financial statements']},
+{c:'FI-04',n:'Auditing Services',g:'Financial Services',k:['auditing','external audit','internal audit']},
+{c:'FI-05',n:'Tax Consultancy Services',g:'Financial Services',k:['tax consultancy','vat consultancy','tax advisory']},
+{c:'FI-06',n:'Foreign Exchange & Money Transfer',g:'Financial Services',k:['exchange house','money transfer','forex']},
+{c:'FI-07',n:'Microfinance & Lending Services',g:'Financial Services',k:['microfinance','lending','loan services']},
+
+{c:'TH-01',n:'Travel Agency & Tour Operator',g:'Tourism & Hospitality',k:['travel agency','tour operator','ticketing']},
+{c:'TH-02',n:'Hotel & Serviced Apartments',g:'Tourism & Hospitality',k:['hotel','serviced apartments','hospitality']},
+{c:'TH-03',n:'Tourist Guide & Excursion Services',g:'Tourism & Hospitality',k:['tour guide','excursions','sightseeing']},
+{c:'TH-04',n:'Holiday Home & Short-Term Rental Management',g:'Tourism & Hospitality',k:['holiday home','short term rental','airbnb management']},
+{c:'TH-05',n:'Diving, Marine & Water Sports Activities',g:'Tourism & Hospitality',k:['diving centre','marine activities','water sports']},
+
+{c:'MF-01',n:'Food Products Manufacturing',g:'Manufacturing & Industrial',k:['food manufacturing','food processing factory']},
+{c:'MF-02',n:'Garment & Textile Manufacturing',g:'Manufacturing & Industrial',k:['garment manufacturing','textile factory']},
+{c:'MF-03',n:'Furniture Manufacturing',g:'Manufacturing & Industrial',k:['furniture manufacturing','joinery','carpentry factory']},
+{c:'MF-04',n:'Plastic Products Manufacturing',g:'Manufacturing & Industrial',k:['plastic manufacturing','plastic products factory']},
+{c:'MF-05',n:'Metal Fabrication & Engineering Works',g:'Manufacturing & Industrial',k:['metal fabrication','steel works','engineering workshop']},
+{c:'MF-06',n:'Packaging Materials Manufacturing',g:'Manufacturing & Industrial',k:['packaging manufacturing','boxes','cartons']},
+{c:'MF-07',n:'Printing & Paper Products Manufacturing',g:'Manufacturing & Industrial',k:['printing factory','paper products manufacturing']},
+{c:'MF-08',n:'Chemical & Cleaning Products Manufacturing',g:'Manufacturing & Industrial',k:['chemical manufacturing','cleaning products factory','detergent']},
+{c:'MF-09',n:'Assembly & Light Industrial Works',g:'Manufacturing & Industrial',k:['assembly','light industry','industrial works']},
+
+{c:'EC-01',n:'E-Commerce — Online Retail Store',g:'E-Commerce & Online',k:['e-commerce','online store','online shop']},
+{c:'EC-02',n:'Online Marketplace Platform',g:'E-Commerce & Online',k:['online marketplace','platform','multi-vendor']},
+{c:'EC-03',n:'Subscription Box & Online Delivery Service',g:'E-Commerce & Online',k:['subscription box','online delivery']},
+{c:'EC-04',n:'Dropshipping & Online Reselling',g:'E-Commerce & Online',k:['dropshipping','online reselling']},
+{c:'EC-05',n:'Digital Content & App Monetisation',g:'E-Commerce & Online',k:['digital content','app monetisation','online courses platform']},
+
+{c:'CM-01',n:'Commercial & Residential Cleaning Services',g:'Cleaning & Facility Services',k:['cleaning services','commercial cleaning','residential cleaning']},
+{c:'CM-02',n:'Pest Control Services',g:'Cleaning & Facility Services',k:['pest control','fumigation']},
+{c:'CM-03',n:'Facilities & Building Maintenance',g:'Cleaning & Facility Services',k:['facility maintenance','building maintenance','fm services']},
+{c:'CM-04',n:'Security Guarding Services',g:'Cleaning & Facility Services',k:['security guarding','security services']},
+{c:'CM-05',n:'Laundry & Dry Cleaning Services',g:'Cleaning & Facility Services',k:['laundry','dry cleaning']},
+{c:'CM-06',n:'Waste Management & Recycling Services',g:'Cleaning & Facility Services',k:['waste management','recycling','garbage collection']},
+
+{c:'EV-01',n:'Event Management & Planning',g:'Events & Entertainment',k:['event management','event planning','wedding planning']},
+{c:'EV-02',n:'Exhibition & Conference Organising',g:'Events & Entertainment',k:['exhibition organiser','conference organiser']},
+{c:'EV-03',n:'Entertainment & Amusement Services',g:'Events & Entertainment',k:['entertainment services','amusement centre']},
+{c:'EV-04',n:'Party Supplies & Decoration Rental',g:'Events & Entertainment',k:['party supplies','decoration rental','event rental']},
+{c:'EV-05',n:'Sports & Recreation Club',g:'Events & Entertainment',k:['sports club','recreation club']},
+
+{c:'PS-01',n:'Legal Consultancy & Law Firm Services',g:'Professional Services',k:['legal consultancy','law firm','lawyer']},
+{c:'PS-02',n:'Engineering Consultancy Office',g:'Professional Services',k:['engineering consultancy','engineering office']},
+{c:'PS-03',n:'Architectural Design Services',g:'Professional Services',k:['architectural design','architect office']},
+{c:'PS-04',n:'Translation & Interpretation Services',g:'Professional Services',k:['translation services','interpretation','translator']},
+{c:'PS-05',n:'Notary & Documentation Services',g:'Professional Services',k:['notary services','documentation services','attestation']},
+{c:'PS-06',n:'Project Management Consultancy',g:'Professional Services',k:['project management consultancy','pmo services']},
+
+{c:'AG-01',n:'Agricultural Production & Farming',g:'Agriculture & Food Production',k:['farming','agriculture','crop production']},
+{c:'AG-02',n:'Fishing & Aquaculture',g:'Agriculture & Food Production',k:['fishing','aquaculture','fish farming']},
+{c:'AG-03',n:'Poultry & Livestock Farming',g:'Agriculture & Food Production',k:['poultry farming','livestock','dairy farming']},
+{c:'AG-04',n:'Landscaping Plants & Nursery Trade',g:'Agriculture & Food Production',k:['plant nursery','landscaping plants']},
+
+{c:'AU-01',n:'Vehicle Repair & Maintenance Garage',g:'Automotive',k:['car garage','vehicle repair','auto maintenance']},
+{c:'AU-02',n:'Car Wash & Detailing Services',g:'Automotive',k:['car wash','car detailing']},
+{c:'AU-03',n:'Auto Spare Parts Trading',g:'Automotive',k:['auto spare parts','car parts trading']},
+{c:'AU-04',n:'Vehicle Showroom & Sales',g:'Automotive',k:['car showroom','vehicle sales','dealership']},
+{c:'AU-05',n:'Tyre Shop & Vulcanizing Services',g:'Automotive',k:['tyre shop','tire shop','vulcanizing']}
+];
+
+var LEGAL_FORMS = [
+  'With Limited Liability (W.L.L.)',
+  'Single Person Company (S.P.C.)',
+  'Bahraini Partnership Company',
+  'Bahrain Shareholding Company (B.S.C.)',
+  'Branch of a Foreign Company',
+  'Other / Not sure yet'
+];
+
+var CR_TYPES = {
+  name_change:{ label:'Change Company Name', icon:'✎' },
+  shareholder_change:{ label:'Shareholder Change', icon:'👥' },
+  activity_add:{ label:'Add Business Activity', icon:'➕' },
+  activity_remove:{ label:'Remove Business Activity', icon:'➖' }
+};
+
+var STATUS_LABEL = {
+  draft:'Draft', submitted:'Submitted', under_review:'Under Review',
+  approved:'Approved', rejected:'Rejected', pending:'Pending'
+};
+
+/* ---------------- data layer (localStorage) ---------------- */
+function loadDB(){
+  try{ var raw = localStorage.getItem(DB_KEY); if(raw) return JSON.parse(raw); }catch(e){}
+  return { companies:[], shareholders:[], changeRequests:[] };
+}
+var DB = loadDB();
+function saveDB(){
+  try{ localStorage.setItem(DB_KEY, JSON.stringify(DB)); return true; }
+  catch(e){ toast('Local storage is full — try removing an uploaded file or old test company (prototype limit; Phase 2 moves documents to real cloud storage).','err'); return false; }
+}
+function uid(){
+  if(window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  return 'id-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10);
+}
+function nowISO(){ return new Date().toISOString(); }
+function fmtDate(iso){
+  if(!iso) return '—';
+  var d = new Date(iso);
+  return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+}
+function fmtDateTime(iso){
+  if(!iso) return '—';
+  var d = new Date(iso);
+  return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})+' · '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+}
+function esc(s){
+  return (s===undefined||s===null?'':String(s)).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+function getCompany(id){ return DB.companies.filter(function(c){return c.id===id;})[0]; }
+function shareholdersOf(companyId){ return DB.shareholders.filter(function(s){return s.companyId===companyId;}); }
+function changeRequestsOf(companyId){ return DB.changeRequests.filter(function(r){return r.companyId===companyId;}).sort(function(a,b){return new Date(b.createdAt)-new Date(a.createdAt);}); }
+function getChangeRequest(id){ return DB.changeRequests.filter(function(r){return r.id===id;})[0]; }
+
+function newCompanyDraft(){
+  return {
+    id: uid(), status:'draft',
+    applicantName:'', applicantEmail:'', applicantPhone:'',
+    legalForm:'',
+    proposedNames:[{name:'',rank:1},{name:'',rank:2},{name:'',rank:3}],
+    approvedName:'', natureOfBusiness:'', selectedActivities:[],
+    registrationNumber:'', adminNotes:'',
+    submittedAt:null, createdAt:nowISO(), updatedAt:nowISO()
+  };
+}
+
+/* ---------------- toast ---------------- */
+function toast(msg, kind){
+  var wrap = document.getElementById('toastWrap');
+  var t = document.createElement('div');
+  t.className = 'toast'+(kind==='err'?' err':kind==='ok'?' ok':'');
+  t.textContent = msg;
+  wrap.appendChild(t);
+  setTimeout(function(){ t.style.opacity='0'; t.style.transition='opacity .3s'; setTimeout(function(){ wrap.removeChild(t); },320); }, 2600);
+}
+
+/* ---------------- image resize / file handling ---------------- */
+function readFileAsCompressedDataURL(file, cb){
+  var MAX_DIM = 1800, QUALITY = 0.82;
+  if(!/^image\//.test(file.type)){
+    if(file.size > 8*1024*1024){ toast('That file is quite large — for the prototype try to keep uploads under 8MB.','err'); }
+    var fr0 = new FileReader();
+    fr0.onload = function(){ cb({dataUrl:fr0.result, name:file.name, isImage:false}); };
+    fr0.readAsDataURL(file);
+    return;
+  }
+  var fr = new FileReader();
+  fr.onload = function(){
+    var img = new Image();
+    img.onload = function(){
+      var w = img.width, h = img.height;
+      if(w>h && w>MAX_DIM){ h = Math.round(h*MAX_DIM/w); w = MAX_DIM; }
+      else if(h>=w && h>MAX_DIM){ w = Math.round(w*MAX_DIM/h); h = MAX_DIM; }
+      var canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      cb({dataUrl:canvas.toDataURL('image/jpeg', QUALITY), name:file.name, isImage:true});
+    };
+    img.src = fr.result;
+  };
+  fr.readAsDataURL(file);
+}
+
+/* ---------------- router ---------------- */
+window.addEventListener('hashchange', render);
+window.addEventListener('load', render);
+
+function render(){
+  var h = (location.hash || '#').slice(1);
+  var parts = h.split('/').filter(function(x){return x!=='';});
+  var app = document.getElementById('app');
+  updateTopnav(parts);
+  try{
+    if(parts[0]==='admin') return renderAdminRoute(parts.slice(1), app);
+    if(parts[0]==='new') return renderWizard(app, null);
+    if(parts[0]==='edit' && parts[1]) return renderWizard(app, parts[1]);
+    if(parts[0]==='company' && parts[1] && parts[2]==='change' && parts[3]==='new') return renderChangeRequestForm(app, parts[1]);
+    if(parts[0]==='company' && parts[1]) return renderCompanyDetail(app, parts[1]);
+    return renderDashboard(app);
+  }catch(e){
+    console.error(e);
+    app.innerHTML = '<div class="wrap"><div class="notebox red">Something went wrong rendering this page. <button class="linklike" onclick="location.hash=\'\'">Go home</button></div></div>';
+  }
+}
+function updateTopnav(parts){
+  var links = document.querySelectorAll('#topnav a');
+  links.forEach(function(a){ a.classList.remove('active'); });
+  if(parts[0]==='admin') { var a=document.querySelector('[data-nav="admin"]'); if(a) a.classList.add('active'); }
+  else { var h=document.querySelector('[data-nav="home"]'); if(h) h.classList.add('active'); }
+}
+
+/* ===================================================================
+   CLIENT: DASHBOARD
+   =================================================================== */
+function renderDashboard(app){
+  var companies = DB.companies.slice().sort(function(a,b){ return new Date(b.updatedAt)-new Date(a.updatedAt); });
+  var html = '<div class="wrap">';
+  html += '<div class="pagehead"><div><h1>My Companies</h1><div class="sub">Set up a new company or manage an existing one.</div></div>'
+        + '<button class="btn btn-primary" onclick="location.hash=\'new\'">+ Start New Company</button></div>';
+
+  if(!companies.length){
+    html += '<div class="card empty">'
+          + '<div class="big">🏢</div>'
+          + '<h3>No companies yet</h3>'
+          + '<p>Start your first company setup — it only takes a few minutes.</p>'
+          + '<button class="btn btn-primary" onclick="location.hash=\'new\'">+ Start New Company</button>'
+          + '</div>';
+  } else {
+    companies.forEach(function(c){
+      var displayName = c.approvedName || (c.proposedNames[0] && c.proposedNames[0].name) || 'Untitled Company';
+      var pending = changeRequestsOf(c.id).filter(function(r){return r.status==='pending'||r.status==='under_review';}).length;
+      html += '<div class="co-card" onclick="location.hash=\''+(c.status==='draft'?'edit/'+c.id:'company/'+c.id)+'\'">'
+            + '<div><h3>'+esc(displayName)+'</h3>'
+            + '<div class="meta">'+esc(c.legalForm||'Legal form not set')+' · Updated '+fmtDate(c.updatedAt)+(pending?' · <b style="color:var(--amber)">'+pending+' pending change request'+(pending>1?'s':'')+'</b>':'')+'</div></div>'
+            + '<span class="badge badge-'+c.status+'"><span class="dot"></span>'+STATUS_LABEL[c.status]+'</span>'
+            + '</div>';
+    });
+  }
+  html += '<div class="footer-note">Prototype build — data is stored only in this browser (localStorage). Nothing is uploaded to a server yet.</div>';
+  html += '</div>';
+  app.innerHTML = html;
+}
+
+/* ===================================================================
+   CLIENT: NEW / EDIT COMPANY WIZARD
+   =================================================================== */
+var WIZ = null; /* in-memory working copy of the company + shareholders being edited */
+var WIZ_STEP = 1;
+
+function renderWizard(app, companyId){
+  if(!WIZ || WIZ.company.id !== companyId && !(companyId===null && WIZ.isNew && !WIZ.saved)){
+    if(companyId){
+      var existing = getCompany(companyId);
+      if(!existing){ toast('That company could not be found.','err'); location.hash=''; return; }
+      WIZ = { isNew:false, saved:true, company: JSON.parse(JSON.stringify(existing)), shareholders: JSON.parse(JSON.stringify(shareholdersOf(companyId))) };
+    } else {
+      WIZ = { isNew:true, saved:false, company: newCompanyDraft(), shareholders:[] };
+    }
+    WIZ_STEP = 1;
+  }
+  drawWizard(app);
+}
+
+function drawWizard(app){
+  var c = WIZ.company;
+  var stepDefs = [
+    {n:1,l:'Names & Type'}, {n:2,l:'Business Activity'}, {n:3,l:'Shareholders'}, {n:4,l:'Review & Submit'}
+  ];
+  var html = '<div class="wrap">';
+  html += '<div class="pagehead"><div><h1>'+(WIZ.isNew&&!WIZ.saved?'New Company Setup':'Continue Draft')+'</h1><div class="sub">Step '+WIZ_STEP+' of 4</div></div>'
+        + '<button class="btn btn-ghost btn-sm" onclick="wizCancel()">Cancel</button></div>';
+
+  html += '<div class="steps">';
+  stepDefs.forEach(function(s){
+    var cls = s.n===WIZ_STEP ? 'active' : (s.n<WIZ_STEP ? 'done' : '');
+    html += '<div class="step '+cls+'"><div class="circ">'+(s.n<WIZ_STEP?'✓':s.n)+'</div><div class="lbl">'+s.l+'</div></div>';
+  });
+  html += '</div>';
+
+  html += '<div class="card pad-lg">';
+  if(WIZ_STEP===1) html += stepNames(c);
+  if(WIZ_STEP===2) html += stepActivities(c);
+  if(WIZ_STEP===3) html += stepShareholders();
+  if(WIZ_STEP===4) html += stepReview(c);
+  html += '</div>';
+
+  html += '</div>';
+  app.innerHTML = html;
+  wireWizardEvents();
+}
+
+function stepNames(c){
+  var h = '<div class="section-title">Your Contact Details</div>';
+  h += '<div class="row3">'
+     + fieldInput('applicantName','Full Name', c.applicantName, 'text', 'e.g. Ahmed Ali')
+     + fieldInput('applicantEmail','Email', c.applicantEmail, 'email', 'you@email.com')
+     + fieldInput('applicantPhone','Phone', c.applicantPhone, 'tel', '+973 ....')
+     + '</div>';
+  h += '<div class="divider"></div>';
+  h += '<div class="section-title">Legal Form</div>';
+  h += '<div class="field"><select class="select" id="f_legalForm">'
+     + '<option value="">Select a legal form…</option>'
+     + LEGAL_FORMS.map(function(l){ return '<option value="'+esc(l)+'"'+(c.legalForm===l?' selected':'')+'>'+esc(l)+'</option>'; }).join('')
+     + '</select></div>';
+  h += '<div class="divider"></div>';
+  h += '<div class="section-title">Proposed Company Names</div>';
+  h += '<p class="sub" style="margin-top:-6px;margin-bottom:14px;color:var(--text-dim);font-size:.85rem;">Give us 3 names in order of preference. Avoid restricted words (e.g. Bahrain, Royal, National) unless you already have approval — final availability is confirmed by the Ministry.</p>';
+  [0,1,2].forEach(function(i){
+    var label = i===0?'1st Choice (Preferred)':(i===1?'2nd Choice':'3rd Choice');
+    h += fieldInput('name_'+i, label, c.proposedNames[i] ? c.proposedNames[i].name : '', 'text', 'Proposed company name');
+  });
+  h += '<div id="err1" class="field err" style="display:none;"></div>';
+  h += '<div class="btn-row"><button class="btn btn-primary" onclick="wizNext()">Continue →</button> <button class="btn btn-ghost" onclick="wizSaveDraft()">Save Draft</button></div>';
+  return h;
+}
+
+function fieldInput(id,label,val,type,ph){
+  return '<div class="field"><label>'+esc(label)+'</label><input class="input" id="f_'+id+'" type="'+type+'" value="'+esc(val)+'" placeholder="'+esc(ph||'')+'"></div>';
+}
+
+function stepActivities(c){
+  var h = '<div class="section-title">Nature of Business</div>';
+  h += '<div class="field"><label>Describe what your company will do</label>'
+     + '<textarea class="textarea" id="f_nature" placeholder="e.g. We will import and sell electronics, and also provide repair services...">'+esc(c.natureOfBusiness)+'</textarea>'
+     + '<div class="hint">We\'ll suggest matching business activities based on this description.</div></div>';
+  h += '<button class="btn btn-navy btn-sm" onclick="wizRecommend()">✨ Suggest Activities</button>';
+  h += '<div id="recoBox"></div>';
+
+  h += '<div class="divider"></div>';
+  h += '<div class="section-title">Selected Activities</div>';
+  h += '<div id="selectedChips" class="chiplist">'+renderChips(c.selectedActivities)+'</div>';
+  if(!c.selectedActivities.length) h += '<p class="hint" style="margin-top:8px;">No activities selected yet — use the suggestions above or search the full list below.</p>';
+
+  h += '<div class="divider"></div>';
+  h += '<div class="section-title">Browse All Activities</div>';
+  h += '<div class="searchbar"><span class="ic">🔍</span><input class="input" id="actSearch" placeholder="Search e.g. \'restaurant\', \'trading\', \'consultancy\'..." oninput="wizFilterActivities(this.value)"></div>';
+  h += '<div class="act-search-list" id="actList">'+renderActivityBrowseList('')+'</div>';
+
+  h += '<div id="err2" class="field err" style="display:none;"></div>';
+  h += '<div class="btn-row"><button class="btn btn-outline" onclick="wizBack()">← Back</button><button class="btn btn-primary" onclick="wizNext()">Continue →</button> <button class="btn btn-ghost" onclick="wizSaveDraft()">Save Draft</button></div>';
+  return h;
+}
+function renderChips(list){
+  if(!list.length) return '';
+  return list.map(function(a){
+    return '<span class="chip">'+esc(a.name)+'<button onclick="wizRemoveActivity(\''+a.code+'\')" title="Remove">✕</button></span>';
+  }).join('');
+}
+function renderActivityBrowseList(query){
+  var q = (query||'').toLowerCase().trim();
+  var selectedCodes = WIZ.company.selectedActivities.map(function(a){return a.code;});
+  var groups = {};
+  ACTIVITIES.forEach(function(a){
+    if(q && (a.name.toLowerCase().indexOf(q)===-1 && a.g.toLowerCase().indexOf(q)===-1 && a.k.join(' ').toLowerCase().indexOf(q)===-1)) return;
+    if(!groups[a.g]) groups[a.g]=[];
+    groups[a.g].push(a);
+  });
+  var keys = Object.keys(groups);
+  if(!keys.length) return '<p class="hint">No matching activities. Try a different search term.</p>';
+  var h='';
+  keys.forEach(function(g){
+    h += '<div class="cat-hd">'+esc(g)+'</div>';
+    groups[g].forEach(function(a){
+      var sel = selectedCodes.indexOf(a.code)>-1;
+      h += '<div class="actcard'+(sel?' selected':'')+'" onclick="wizToggleActivity(\''+a.code+'\')">'
+         + '<div class="actcheck">'+(sel?'✓':'')+'</div>'
+         + '<div><div class="name">'+esc(a.name)+'</div><div class="code">'+esc(a.code)+' · '+esc(a.g)+'</div></div>'
+         + '</div>';
+    });
+  });
+  return h;
+}
+
+function stepShareholders(){
+  if(!WIZ.shareholders.length) wizNewShareholder();
+  var h = '<div class="section-title">Shareholders & Ownership</div>';
+  h += '<p class="hint" style="margin-bottom:14px;">Add every shareholder, their ownership percentage, and who is authorized to sign on behalf of the company. Total ownership must equal 100%.</p>';
+  h += '<div id="shList">'+WIZ.shareholders.map(function(s,i){ return renderShareholderCard(s,i); }).join('')+'</div>';
+  h += '<button class="btn btn-outline btn-sm" onclick="wizAddShareholder()">+ Add Shareholder</button>';
+  h += '<div class="pctbar-wrap"><div id="pctbar"></div></div>';
+  h += '<div id="err3" class="field err" style="display:none;"></div>';
+  h += '<div class="btn-row"><button class="btn btn-outline" onclick="wizBack()">← Back</button><button class="btn btn-primary" onclick="wizNext()">Continue →</button> <button class="btn btn-ghost" onclick="wizSaveDraft()">Save Draft</button></div>';
+  return h;
+}
+function renderShareholderCard(s,i){
+  var h = '<div class="sh-card" data-idx="'+i+'">';
+  h += '<div class="sh-head"><b>Shareholder '+(i+1)+'</b>'+(WIZ.shareholders.length>1?'<button class="btn btn-danger btn-sm" onclick="wizRemoveShareholder('+i+')">Remove</button>':'')+'</div>';
+  h += '<div class="row2">'
+     + '<div class="field"><label>Full Name</label><input class="input sh-f" data-f="fullName" value="'+esc(s.fullName)+'" placeholder="Full legal name"></div>'
+     + '<div class="field"><label>Nationality</label><input class="input sh-f" data-f="nationality" value="'+esc(s.nationality)+'" placeholder="e.g. Bahraini"></div>'
+     + '</div>';
+  h += '<div class="field"><label>Identification Type</label><div class="radiogroup">'
+     + ['national_id','passport'].map(function(t){
+         var label = t==='national_id'?'National ID':'Passport';
+         return '<label class="radiopill'+(s.idType===t?' checked':'')+'"><input type="radio" name="idtype_'+i+'" value="'+t+'" '+(s.idType===t?'checked':'')+' onchange="wizSetShareholderField('+i+',\'idType\',\''+t+'\')">'+label+'</label>';
+       }).join('')
+     + '</div></div>';
+  h += '<div class="row2">'
+     + '<div class="field"><label>ID / Passport Number</label><input class="input sh-f" data-f="idNumber" value="'+esc(s.idNumber)+'" placeholder="Document number"></div>'
+     + '<div class="field"><label>Ownership %</label><input class="input sh-f" data-f="ownershipPercent" type="number" min="0" max="100" step="0.01" value="'+(s.ownershipPercent||'')+'" placeholder="0-100" oninput="wizUpdatePctBar()"></div>'
+     + '</div>';
+  h += '<label class="checkline"><input type="checkbox" '+(s.isAuthorizedSignatory?'checked':'')+' onchange="wizSetShareholderField('+i+',\'isAuthorizedSignatory\',this.checked)"> Authorized Signatory</label>';
+  h += '<div class="field" style="margin-top:14px;"><label>Upload ID / Passport Document</label>';
+  if(s.idDocDataUrl){
+    h += '<div class="filepreview">'+(s.idDocIsImage?'<img src="'+s.idDocDataUrl+'">':'<span>📄</span>')+'<span>'+esc(s.idDocName)+'</span><span class="rm" onclick="wizRemoveDoc('+i+')">Remove</span></div>';
+  } else {
+    h += '<label class="filebtn">📎 Choose file (image or PDF)<input type="file" accept="image/*,.pdf" style="display:none;" onchange="wizUploadDoc('+i+',this)"></label>';
+  }
+  h += '</div>';
+  h += '</div>';
+  return h;
+}
+function stepReview(c){
+  var h = '<div class="section-title">Review Your Application</div>';
+  h += '<div class="compare"><div class="box"><h4>Company</h4>';
+  h += '<p><b>Legal Form:</b> '+esc(c.legalForm||'—')+'</p>';
+  h += '<p><b>Names:</b><br>'+c.proposedNames.map(function(n,i){return (i+1)+'. '+esc(n.name||'—');}).join('<br>')+'</p>';
+  h += '<p><b>Contact:</b> '+esc(c.applicantName||'—')+' · '+esc(c.applicantEmail||'—')+' · '+esc(c.applicantPhone||'—')+'</p>';
+  h += '</div><div class="box"><h4>Business Activities</h4>';
+  h += c.selectedActivities.length ? c.selectedActivities.map(function(a){return '• '+esc(a.name);}).join('<br>') : '<span class="hint">None selected</span>';
+  h += '</div></div>';
+
+  h += '<div class="divider"></div><h4 style="margin-bottom:10px;">Shareholders</h4>';
+  h += '<div style="overflow-x:auto;"><table class="tbl"><thead><tr><th>Name</th><th>ID Type</th><th>Ownership</th><th>Signatory</th><th>Document</th></tr></thead><tbody>';
+  WIZ.shareholders.forEach(function(s){
+    h += '<tr><td>'+esc(s.fullName||'—')+'</td><td>'+(s.idType==='passport'?'Passport':'National ID')+'</td><td>'+(s.ownershipPercent||0)+'%</td><td>'+(s.isAuthorizedSignatory?'Yes':'No')+'</td><td>'+(s.idDocDataUrl?'✓ Uploaded':'<span style="color:var(--red);">Missing</span>')+'</td></tr>';
+  });
+  h += '</tbody></table></div>';
+
+  var total = shTotal();
+  h += '<div class="notebox'+(total===100?' blue':' red')+'" style="margin-top:16px;">Total ownership: <b>'+total+'%</b>'+(total===100?' — looks good.':' — must equal 100% before submitting.')+'</div>';
+  h += '<div class="notebox">This is a prototype. Suggested activities and reference codes are a starting point only — final classification and name approval are confirmed by the Ministry during formal filing.</div>';
+
+  h += '<div class="btn-row"><button class="btn btn-outline" onclick="wizBack()">← Back</button><button class="btn btn-primary" onclick="wizSubmit()">Submit Application</button> <button class="btn btn-ghost" onclick="wizSaveDraft()">Save Draft</button></div>';
+  return h;
+}
+
+function shTotal(){
+  var t = 0;
+  WIZ.shareholders.forEach(function(s){ t += parseFloat(s.ownershipPercent)||0; });
+  return Math.round(t*100)/100;
+}
+function wireWizardEvents(){
+  if(WIZ_STEP===3) wizUpdatePctBar();
+}
+function wizUpdatePctBar(){
+  document.querySelectorAll('.sh-card').forEach(function(card){
+    var i = +card.getAttribute('data-idx');
+    card.querySelectorAll('.sh-f').forEach(function(inp){
+      var f = inp.getAttribute('data-f');
+      if(f==='ownershipPercent') WIZ.shareholders[i][f] = inp.value;
+    });
+  });
+  var t = shTotal();
+  var bar = document.getElementById('pctbar');
+  if(bar) bar.innerHTML = '<div class="pctbar '+(t===100?'ok':'bad')+'"><span>Total Ownership</span><span class="pctnum '+(t===100?'ok':'bad')+'">'+t+'%</span></div>';
+}
+function syncStepFieldsIntoState(){
+  var c = WIZ.company;
+  if(WIZ_STEP===1){
+    c.applicantName = val('f_applicantName'); c.applicantEmail = val('f_applicantEmail'); c.applicantPhone = val('f_applicantPhone');
+    c.legalForm = val('f_legalForm');
+    [0,1,2].forEach(function(i){ c.proposedNames[i] = { name: val('f_name_'+i), rank:i+1 }; });
+  }
+  if(WIZ_STEP===2){
+    c.natureOfBusiness = val('f_nature');
+  }
+  if(WIZ_STEP===3){
+    document.querySelectorAll('.sh-card').forEach(function(card){
+      var i = +card.getAttribute('data-idx');
+      card.querySelectorAll('.sh-f').forEach(function(inp){
+        var f = inp.getAttribute('data-f');
+        WIZ.shareholders[i][f] = inp.value;
+      });
+    });
+  }
+}
+function val(id){ var e = document.getElementById(id); return e ? e.value.trim() : ''; }
+
+function wizNext(){
+  syncStepFieldsIntoState();
+  var err = validateStep(WIZ_STEP);
+  if(err){ showStepError(WIZ_STEP, err); return; }
+  WIZ_STEP++;
+  drawWizard(document.getElementById('app'));
+}
+function wizBack(){
+  syncStepFieldsIntoState();
+  WIZ_STEP--;
+  drawWizard(document.getElementById('app'));
+}
+function showStepError(step, msg){
+  var e = document.getElementById('err'+step);
+  if(e){ e.style.display='block'; e.textContent = msg; e.scrollIntoView({behavior:'smooth',block:'center'}); }
+}
+function validateStep(step){
+  var c = WIZ.company;
+  if(step===1){
+    if(!c.applicantName || !c.applicantEmail) return 'Please enter your name and email.';
+    if(!c.legalForm) return 'Please select a legal form.';
+    if(!c.proposedNames[0].name) return 'Please enter at least your 1st choice company name.';
+  }
+  if(step===2){
+    if(!c.selectedActivities.length) return 'Please select at least one business activity.';
+  }
+  if(step===3){
+    if(!WIZ.shareholders.length) return 'Please add at least one shareholder.';
+    for(var i=0;i<WIZ.shareholders.length;i++){
+      var s = WIZ.shareholders[i];
+      if(!s.fullName || !s.idNumber || s.ownershipPercent===''||s.ownershipPercent===undefined) return 'Please complete all fields for Shareholder '+(i+1)+'.';
+    }
+    if(!WIZ.shareholders.some(function(s){return s.isAuthorizedSignatory;})) return 'At least one shareholder must be marked as an authorized signatory.';
+    if(shTotal()!==100) return 'Total ownership must equal exactly 100% (currently '+shTotal()+'%).';
+  }
+  return null;
+}
+function wizCancel(){
+  if(confirm('Discard this application? Any unsaved changes will be lost.')){ WIZ=null; location.hash=''; }
+}
+function wizSaveDraft(){
+  syncStepFieldsIntoState();
+  persistWizard('draft');
+  toast('Draft saved.','ok');
+}
+function wizSubmit(){
+  syncStepFieldsIntoState();
+  for(var step=1;step<=3;step++){
+    var err = validateStep(step);
+    if(err){ toast(err,'err'); WIZ_STEP=step; drawWizard(document.getElementById('app')); return; }
+  }
+  WIZ.company.status = 'submitted';
+  WIZ.company.submittedAt = nowISO();
+  persistWizard('submitted');
+  toast('Application submitted!','ok');
+  location.hash = 'company/'+WIZ.company.id;
+}
+function persistWizard(){
+  var c = WIZ.company;
+  c.updatedAt = nowISO();
+  var idx = DB.companies.findIndex(function(x){return x.id===c.id;});
+  if(idx>-1) DB.companies[idx] = c; else DB.companies.push(c);
+  DB.shareholders = DB.shareholders.filter(function(s){return s.companyId!==c.id;});
+  WIZ.shareholders.forEach(function(s){
+    s.companyId = c.id;
+    if(!s.id) s.id = uid();
+    DB.shareholders.push(s);
+  });
+  saveDB();
+  WIZ.saved = true;
+}
+function wizRecommend(){
+  syncStepFieldsIntoState();
+  var results = recommendActivities(WIZ.company.natureOfBusiness, 8);
+  var box = document.getElementById('recoBox');
+  if(!results.length){ box.innerHTML = '<p class="hint" style="margin-top:10px;">Describe your business above, then click Suggest Activities — or just search the full list below.</p>'; return; }
+  var selectedCodes = WIZ.company.selectedActivities.map(function(a){return a.code;});
+  var h = '<div class="cat-hd" style="margin-top:14px;">Suggested for you</div>';
+  results.forEach(function(a){
+    var sel = selectedCodes.indexOf(a.code)>-1;
+    h += '<div class="actcard'+(sel?' selected':'')+'" onclick="wizToggleActivity(\''+a.code+'\')">'
+       + '<div class="actcheck">'+(sel?'✓':'')+'</div>'
+       + '<div><div class="name">'+esc(a.name)+'</div><div class="code">'+esc(a.code)+' · '+esc(a.g)+'</div></div></div>';
+  });
+  box.innerHTML = h;
+}
+var STOPWORDS = ['and','the','will','for','with','that','this','from','are','was','our','but','not','can','all','has','have','also','some','they','them','you','your','their','who','what','when','where','which','into','than','then','been','being','out','off','over','under','only','just','more','most','such','own','same','too','very','get','got','make','made','doing','does','company','business'];
+function recommendActivities(text, limit){
+  var q = (text||'').toLowerCase();
+  var tokens = q.split(/[^a-z0-9]+/).filter(function(t){return t.length>2 && STOPWORDS.indexOf(t)===-1;});
+  if(!tokens.length) return [];
+  var scored = ACTIVITIES.map(function(a){
+    var score = 0;
+    var hay = (a.n+' '+a.g+' '+a.k.join(' ')).toLowerCase();
+    tokens.forEach(function(t){
+      if(a.k.indexOf(t)>-1) score += 5;
+      else if(new RegExp('\\b'+t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b').test(hay)) score += 2;
+    });
+    return {a:a, score:score};
+  }).filter(function(x){return x.score>0;});
+  scored.sort(function(x,y){return y.score-x.score;});
+  return scored.slice(0, limit||10).map(function(x){
+    return {code:x.a.c, name:x.a.n, g:x.a.g};
+  });
+}
+function wizToggleActivity(code){
+  var c = WIZ.company;
+  var idx = c.selectedActivities.findIndex(function(a){return a.code===code;});
+  if(idx>-1){ c.selectedActivities.splice(idx,1); }
+  else {
+    var a = ACTIVITIES.filter(function(x){return x.c===code;})[0];
+    if(a) c.selectedActivities.push({code:a.c,name:a.n});
+  }
+  drawWizard(document.getElementById('app'));
+}
+function wizRemoveActivity(code){ wizToggleActivity(code); }
+function wizFilterActivities(q){
+  document.getElementById('actList').innerHTML = renderActivityBrowseList(q);
+}
+function wizNewShareholder(){
+  WIZ.shareholders.push({ id:uid(), companyId:WIZ.company.id, fullName:'', nationality:'', idType:'national_id', idNumber:'', ownershipPercent:'', isAuthorizedSignatory:false, idDocDataUrl:'', idDocName:'', idDocIsImage:false });
+}
+function wizAddShareholder(){
+  syncStepFieldsIntoState();
+  wizNewShareholder();
+  drawWizard(document.getElementById('app'));
+}
+function wizRemoveShareholder(i){
+  syncStepFieldsIntoState();
+  WIZ.shareholders.splice(i,1);
+  drawWizard(document.getElementById('app'));
+}
+function wizSetShareholderField(i,field,value){
+  syncStepFieldsIntoState();
+  WIZ.shareholders[i][field]=value;
+  drawWizard(document.getElementById('app'));
+}
+function wizUploadDoc(i, input){
+  var file = input.files[0];
+  if(!file) return;
+  syncStepFieldsIntoState();
+  readFileAsCompressedDataURL(file, function(res){
+    WIZ.shareholders[i].idDocDataUrl = res.dataUrl;
+    WIZ.shareholders[i].idDocName = res.name;
+    WIZ.shareholders[i].idDocIsImage = res.isImage;
+    drawWizard(document.getElementById('app'));
+  });
+}
+function wizRemoveDoc(i){
+  syncStepFieldsIntoState();
+  WIZ.shareholders[i].idDocDataUrl=''; WIZ.shareholders[i].idDocName=''; WIZ.shareholders[i].idDocIsImage=false;
+  drawWizard(document.getElementById('app'));
+}
+
+/* ===================================================================
+   CLIENT: COMPANY DETAIL
+   =================================================================== */
+function renderCompanyDetail(app, id){
+  var c = getCompany(id);
+  if(!c){ app.innerHTML = '<div class="wrap"><div class="notebox red">Company not found.</div></div>'; return; }
+  var sh = shareholdersOf(id);
+  var crs = changeRequestsOf(id);
+  var displayName = c.approvedName || (c.proposedNames[0] && c.proposedNames[0].name) || 'Untitled Company';
+
+  var h = '<div class="wrap">';
+  h += '<button class="linklike" style="margin-bottom:14px;" onclick="location.hash=\'\'">← My Companies</button>';
+  h += '<div class="pagehead"><div><h1>'+esc(displayName)+'</h1><div class="sub">'+esc(c.legalForm||'')+'</div></div><span class="badge badge-'+c.status+'">'+STATUS_LABEL[c.status]+'</span></div>';
+
+  if(c.status==='rejected' && c.adminNotes){
+    h += '<div class="notebox red"><b>Application rejected.</b> '+esc(c.adminNotes)+'</div>';
+  }
+  if((c.status==='submitted'||c.status==='under_review')){
+    h += '<div class="notebox blue">Your application is being reviewed'+(c.status==='under_review'?' by our team right now':'')+'. We\'ll update the status here once it\'s processed.</div>';
+  }
+
+  h += '<div class="card"><div class="section-title">Status Timeline</div>'+renderTimeline(c)+'</div>';
+
+  h += '<div class="card"><div class="section-title">Company Information</div>';
+  h += '<p><b>Proposed Names:</b><br>'+c.proposedNames.map(function(n,i){return (i+1)+'. '+esc(n.name||'—');}).join('<br>')+'</p>';
+  h += '<p><b>Business Activities:</b><br>'+(c.selectedActivities.length?c.selectedActivities.map(function(a){return '• '+esc(a.name);}).join('<br>'):'—')+'</p>';
+  if(c.registrationNumber) h += '<p><b>Registration Number:</b> '+esc(c.registrationNumber)+'</p>';
+  h += '</div>';
+
+  h += '<div class="card"><div class="section-title">Shareholders</div><div style="overflow-x:auto;"><table class="tbl"><thead><tr><th>Name</th><th>Nationality</th><th>Ownership</th><th>Signatory</th><th>Document</th></tr></thead><tbody>';
+  sh.forEach(function(s){
+    h += '<tr><td>'+esc(s.fullName)+'</td><td>'+esc(s.nationality||'—')+'</td><td>'+s.ownershipPercent+'%</td><td>'+(s.isAuthorizedSignatory?'Yes':'No')+'</td><td>'+(s.idDocDataUrl?'✓ Uploaded':'—')+'</td></tr>';
+  });
+  h += '</tbody></table></div></div>';
+
+  h += '<div class="card"><div class="pagehead" style="margin-bottom:10px;"><div class="section-title" style="margin:0;">Change Requests</div>'
+     + (c.status==='approved' ? '<button class="btn btn-outline btn-sm" onclick="location.hash=\'company/'+c.id+'/change/new\'">+ Request a Change</button>' : '')
+     + '</div>';
+  if(!crs.length){
+    h += '<p class="hint">'+(c.status==='approved' ? 'No change requests yet.' : 'Change requests become available once your company is approved.')+'</p>';
+  } else {
+    crs.forEach(function(r){
+      h += '<div class="co-card" style="cursor:default;"><div><h3 style="font-size:.92rem;">'+CR_TYPES[r.type].icon+' '+CR_TYPES[r.type].label+'</h3><div class="meta">Filed '+fmtDate(r.createdAt)+(r.adminNotes?' · '+esc(r.adminNotes):'')+'</div></div><span class="badge badge-'+(r.status==='approved'?'approved':r.status==='rejected'?'rejected':'pending')+'">'+STATUS_LABEL[r.status]+'</span></div>';
+    });
+  }
+  h += '</div>';
+
+  if(c.status==='draft'){
+    h += '<div class="btn-row"><button class="btn btn-primary" onclick="location.hash=\'edit/'+c.id+'\'">Continue Editing Draft</button></div>';
+  }
+
+  h += '</div>';
+  app.innerHTML = h;
+}
+function renderTimeline(c){
+  var steps = [
+    {k:'draft', l:'Draft Created', d:c.createdAt},
+    {k:'submitted', l:'Submitted', d:c.submittedAt},
+    {k:'under_review', l:'Under Review', d:c.status==='under_review'||c.status==='approved'||c.status==='rejected' ? c.updatedAt : null},
+    {k:'approved', l: c.status==='rejected'?'Rejected':'Approved', d: (c.status==='approved'||c.status==='rejected') ? c.updatedAt : null}
+  ];
+  var reachedIdx = steps.reduce(function(acc,s,i){ return s.d ? i : acc; }, 0);
+  var h = '<ul class="timeline">';
+  steps.forEach(function(s,i){
+    h += '<li class="'+(i<=reachedIdx && s.d ? 'on':'')+'"><div class="tdot"></div><div><div class="tlabel">'+s.l+'</div><div class="tdate">'+(s.d?fmtDateTime(s.d):'Pending')+'</div></div></li>';
+  });
+  h += '</ul>';
+  return h;
+}
+
+/* ===================================================================
+   CLIENT: CHANGE REQUEST FORM
+   =================================================================== */
+var CR_DRAFT = null;
+function renderChangeRequestForm(app, companyId){
+  var c = getCompany(companyId);
+  if(!c){ app.innerHTML = '<div class="wrap"><div class="notebox red">Company not found.</div></div>'; return; }
+  if(!CR_DRAFT || CR_DRAFT.companyId!==companyId){
+    CR_DRAFT = { companyId:companyId, type:null, names:[{name:'',rank:1},{name:'',rank:2},{name:'',rank:3}], reason:'',
+      addActivities:[], removeActivities:[], shAction:'add', shTargetId:'', sh:{ fullName:'',nationality:'',idType:'national_id',idNumber:'',ownershipPercent:'',isAuthorizedSignatory:false,idDocDataUrl:'',idDocName:'',idDocIsImage:false } };
+  }
+  var h = '<div class="wrap">';
+  h += '<button class="linklike" style="margin-bottom:14px;" onclick="location.hash=\'company/'+companyId+'\'">← Back to Company</button>';
+  h += '<h1>Request a Change</h1><div class="sub" style="margin-bottom:18px;">'+esc(c.approvedName||c.proposedNames[0].name)+'</div>';
+
+  h += '<div class="card">';
+  if(!CR_DRAFT.type){
+    h += '<div class="section-title">What would you like to change?</div>';
+    h += '<div class="row2">';
+    Object.keys(CR_TYPES).forEach(function(t){
+      h += '<div class="actcard" style="align-items:center;" onclick="crSetType(\''+t+'\')"><div style="font-size:1.3rem;">'+CR_TYPES[t].icon+'</div><div class="name">'+CR_TYPES[t].label+'</div></div>';
+    });
+    h += '</div>';
+  } else {
+    h += '<div class="section-title">'+CR_TYPES[CR_DRAFT.type].icon+' '+CR_TYPES[CR_DRAFT.type].label+' <button class="linklike" style="float:right;" onclick="CR_DRAFT.type=null;render();">change type</button></div>';
+    if(CR_DRAFT.type==='name_change') h += crNameChangeForm(c);
+    if(CR_DRAFT.type==='activity_add') h += crActivityAddForm(c);
+    if(CR_DRAFT.type==='activity_remove') h += crActivityRemoveForm(c);
+    if(CR_DRAFT.type==='shareholder_change') h += crShareholderChangeForm(c);
+    h += '<div id="crErr" class="field err" style="display:none;"></div>';
+    h += '<div class="btn-row"><button class="btn btn-primary" onclick="crSubmit()">Submit Request</button></div>';
+  }
+  h += '</div></div>';
+  app.innerHTML = h;
+}
+function crSetType(t){ CR_DRAFT.type = t; render(); }
+function crNameChangeForm(){
+  var h = '<p class="hint" style="margin-bottom:12px;">Propose up to 3 new names in order of preference.</p>';
+  [0,1,2].forEach(function(i){
+    h += fieldInput('cr_name_'+i, (i===0?'1st Choice':i===1?'2nd Choice':'3rd Choice'), CR_DRAFT.names[i].name, 'text', 'New company name');
+  });
+  h += '<div class="field"><label>Reason for Change</label><textarea class="textarea" id="f_cr_reason" placeholder="Briefly explain why you want to change the name...">'+esc(CR_DRAFT.reason)+'</textarea></div>';
+  return h;
+}
+function crActivityAddForm(c){
+  var existing = c.selectedActivities.map(function(a){return a.code;});
+  var h = '<p class="hint" style="margin-bottom:12px;">Search and select the activities you want to add.</p>';
+  h += '<div class="searchbar"><span class="ic">🔍</span><input class="input" id="crAddSearch" placeholder="Search activities..." oninput="crFilterAdd(this.value)"></div>';
+  h += '<div class="chiplist" id="crAddChips">'+CR_DRAFT.addActivities.map(function(a){return '<span class="chip">'+esc(a.name)+'<button onclick="crToggleAdd(\''+a.code+'\')">✕</button></span>';}).join('')+'</div>';
+  h += '<div class="act-search-list" id="crAddList">'+crAddBrowseHtml('', existing)+'</div>';
+  return h;
+}
+function crAddBrowseHtml(q, existing){
+  q = (q||'').toLowerCase();
+  var selCodes = CR_DRAFT.addActivities.map(function(a){return a.code;});
+  var h='';
+  ACTIVITIES.forEach(function(a){
+    if(existing.indexOf(a.c)>-1) return;
+    if(q && (a.n+a.g+a.k.join(' ')).toLowerCase().indexOf(q)===-1) return;
+    var sel = selCodes.indexOf(a.c)>-1;
+    h += '<div class="actcard'+(sel?' selected':'')+'" onclick="crToggleAdd(\''+a.c+'\')"><div class="actcheck">'+(sel?'✓':'')+'</div><div><div class="name">'+esc(a.n)+'</div><div class="code">'+esc(a.c)+' · '+esc(a.g)+'</div></div></div>';
+  });
+  return h || '<p class="hint">No matches.</p>';
+}
+function crFilterAdd(q){ document.getElementById('crAddList').innerHTML = crAddBrowseHtml(q, getCompany(CR_DRAFT.companyId).selectedActivities.map(function(a){return a.code;})); }
+function crToggleAdd(code){
+  var idx = CR_DRAFT.addActivities.findIndex(function(a){return a.code===code;});
+  if(idx>-1) CR_DRAFT.addActivities.splice(idx,1);
+  else { var a = ACTIVITIES.filter(function(x){return x.c===code;})[0]; if(a) CR_DRAFT.addActivities.push({code:a.c,name:a.n}); }
+  render();
+}
+function crActivityRemoveForm(c){
+  var h = '<p class="hint" style="margin-bottom:12px;">Select which current activities to remove. At least one must remain.</p>';
+  c.selectedActivities.forEach(function(a){
+    var sel = CR_DRAFT.removeActivities.indexOf(a.code)>-1;
+    h += '<div class="actcard'+(sel?' selected':'')+'" onclick="crToggleRemove(\''+a.code+'\')"><div class="actcheck">'+(sel?'✓':'')+'</div><div class="name">'+esc(a.name)+'</div></div>';
+  });
+  return h;
+}
+function crToggleRemove(code){
+  var idx = CR_DRAFT.removeActivities.indexOf(code);
+  if(idx>-1) CR_DRAFT.removeActivities.splice(idx,1); else CR_DRAFT.removeActivities.push(code);
+  render();
+}
+function crShareholderChangeForm(c){
+  var sh = shareholdersOf(c.id);
+  var h = '<div class="field"><label>Action</label><div class="radiogroup">';
+  [['add','Add New Shareholder'],['edit','Edit Existing Shareholder'],['remove','Remove Shareholder']].forEach(function(o){
+    h += '<label class="radiopill'+(CR_DRAFT.shAction===o[0]?' checked':'')+'"><input type="radio" name="shaction" value="'+o[0]+'" '+(CR_DRAFT.shAction===o[0]?'checked':'')+' onchange="crSetShAction(\''+o[0]+'\')">'+o[1]+'</label>';
+  });
+  h += '</div></div>';
+
+  if(CR_DRAFT.shAction!=='add'){
+    h += '<div class="field"><label>Select Shareholder</label><select class="select" id="f_shTarget" onchange="crSetShTarget(this.value)"><option value="">Choose…</option>'
+       + sh.map(function(s){ return '<option value="'+s.id+'"'+(CR_DRAFT.shTargetId===s.id?' selected':'')+'>'+esc(s.fullName)+' ('+s.ownershipPercent+'%)</option>'; }).join('')
+       + '</select></div>';
+  }
+  if(CR_DRAFT.shAction==='add' || CR_DRAFT.shAction==='edit'){
+    var s = CR_DRAFT.sh;
+    h += '<div class="row2">'
+       + '<div class="field"><label>Full Name</label><input class="input" id="f_sh_fullName" value="'+esc(s.fullName)+'"></div>'
+       + '<div class="field"><label>Nationality</label><input class="input" id="f_sh_nationality" value="'+esc(s.nationality)+'"></div></div>';
+    h += '<div class="field"><label>ID Type</label><div class="radiogroup">'
+       + ['national_id','passport'].map(function(t){ return '<label class="radiopill'+(s.idType===t?' checked':'')+'"><input type="radio" name="sh_idtype" value="'+t+'" '+(s.idType===t?'checked':'')+' onchange="CR_DRAFT.sh.idType=\''+t+'\';render();">'+(t==='national_id'?'National ID':'Passport')+'</label>'; }).join('')
+       + '</div></div>';
+    h += '<div class="row2">'
+       + '<div class="field"><label>ID Number</label><input class="input" id="f_sh_idNumber" value="'+esc(s.idNumber)+'"></div>'
+       + '<div class="field"><label>Ownership %</label><input class="input" id="f_sh_ownershipPercent" type="number" value="'+esc(s.ownershipPercent)+'"></div></div>';
+    h += '<label class="checkline"><input type="checkbox" id="f_sh_signatory" '+(s.isAuthorizedSignatory?'checked':'')+'> Authorized Signatory</label>';
+    h += '<div class="field" style="margin-top:12px;"><label>ID Document</label>';
+    if(s.idDocDataUrl) h += '<div class="filepreview">'+(s.idDocIsImage?'<img src="'+s.idDocDataUrl+'">':'<span>📄</span>')+'<span>'+esc(s.idDocName)+'</span><span class="rm" onclick="CR_DRAFT.sh.idDocDataUrl=\'\';render();">Remove</span></div>';
+    else h += '<label class="filebtn">📎 Choose file<input type="file" accept="image/*,.pdf" style="display:none;" onchange="crUploadShDoc(this)"></label>';
+    h += '</div>';
+  }
+  if(CR_DRAFT.shAction==='remove'){
+    h += '<div class="notebox red">Removing a shareholder will require the remaining shareholders\' ownership to be rebalanced — our team will confirm the new percentages with you.</div>';
+  }
+  return h;
+}
+function crSetShAction(a){ CR_DRAFT.shAction=a; render(); }
+function crSetShTarget(id){
+  CR_DRAFT.shTargetId = id;
+  if(CR_DRAFT.shAction==='edit'){
+    var s = DB.shareholders.filter(function(x){return x.id===id;})[0];
+    if(s) CR_DRAFT.sh = JSON.parse(JSON.stringify(s));
+  }
+  render();
+}
+function crUploadShDoc(input){
+  var file = input.files[0]; if(!file) return;
+  readFileAsCompressedDataURL(file, function(res){
+    CR_DRAFT.sh.idDocDataUrl = res.dataUrl; CR_DRAFT.sh.idDocName = res.name; CR_DRAFT.sh.idDocIsImage = res.isImage;
+    render();
+  });
+}
+function crSyncFields(){
+  if(CR_DRAFT.type==='name_change'){
+    [0,1,2].forEach(function(i){ CR_DRAFT.names[i] = {name: val('f_cr_name_'+i), rank:i+1}; });
+    CR_DRAFT.reason = val('f_cr_reason');
+  }
+  if(CR_DRAFT.type==='shareholder_change' && (CR_DRAFT.shAction==='add'||CR_DRAFT.shAction==='edit')){
+    CR_DRAFT.sh.fullName = val('f_sh_fullName'); CR_DRAFT.sh.nationality = val('f_sh_nationality');
+    CR_DRAFT.sh.idNumber = val('f_sh_idNumber'); CR_DRAFT.sh.ownershipPercent = val('f_sh_ownershipPercent');
+    var sig = document.getElementById('f_sh_signatory'); CR_DRAFT.sh.isAuthorizedSignatory = sig ? sig.checked : false;
+  }
+}
+function crSubmit(){
+  crSyncFields();
+  var err = null, details = {};
+  if(CR_DRAFT.type==='name_change'){
+    if(!CR_DRAFT.names[0].name) err = 'Please enter at least a 1st choice name.';
+    details = { newNames: CR_DRAFT.names, reason: CR_DRAFT.reason };
+  } else if(CR_DRAFT.type==='activity_add'){
+    if(!CR_DRAFT.addActivities.length) err = 'Please select at least one activity to add.';
+    details = { activities: CR_DRAFT.addActivities };
+  } else if(CR_DRAFT.type==='activity_remove'){
+    var c = getCompany(CR_DRAFT.companyId);
+    if(!CR_DRAFT.removeActivities.length) err = 'Please select at least one activity to remove.';
+    else if(CR_DRAFT.removeActivities.length >= c.selectedActivities.length) err = 'You must keep at least one business activity.';
+    details = { activities: CR_DRAFT.removeActivities.map(function(code){ return c.selectedActivities.filter(function(a){return a.code===code;})[0]; }) };
+  } else if(CR_DRAFT.type==='shareholder_change'){
+    if(CR_DRAFT.shAction!=='add' && !CR_DRAFT.shTargetId) err = 'Please select which shareholder this applies to.';
+    if(!err && (CR_DRAFT.shAction==='add'||CR_DRAFT.shAction==='edit')){
+      if(!CR_DRAFT.sh.fullName || !CR_DRAFT.sh.idNumber || CR_DRAFT.sh.ownershipPercent==='') err = 'Please complete the shareholder\'s details.';
+    }
+    details = { action: CR_DRAFT.shAction, targetShareholderId: CR_DRAFT.shTargetId, shareholder: CR_DRAFT.sh };
+  }
+  if(err){ var e = document.getElementById('crErr'); e.style.display='block'; e.textContent = err; return; }
+  var cr = { id:uid(), companyId:CR_DRAFT.companyId, type:CR_DRAFT.type, details:details, status:'pending', adminNotes:'', createdAt:nowISO(), updatedAt:nowISO() };
+  DB.changeRequests.push(cr);
+  saveDB();
+  toast('Change request submitted.','ok');
+  CR_DRAFT = null;
+  location.hash = 'company/'+cr.companyId;
+}
+
+/* ===================================================================
+   ADMIN
+   =================================================================== */
+function isAdminUnlocked(){ return sessionStorage.getItem(ADMIN_SESSION_KEY)==='1'; }
+function renderAdminRoute(parts, app){
+  if(!isAdminUnlocked()) return renderAdminGate(app);
+  if(parts[0]==='company' && parts[1]) return renderAdminCompany(app, parts[1]);
+  if(parts[0]==='change' && parts[1]) return renderAdminChange(app, parts[1]);
+  return renderAdminDashboard(app);
+}
+function renderAdminGate(app){
+  app.innerHTML = '<div class="wrap gate"><div class="card">'
+    + '<h2 style="margin-bottom:6px;">Admin Access</h2>'
+    + '<p class="hint" style="margin-bottom:16px;">Placeholder passcode gate for this prototype — real staff accounts arrive in Phase 2.</p>'
+    + '<div class="field"><input class="input" type="password" id="adminPass" placeholder="Passcode" onkeydown="if(event.key===\'Enter\')adminUnlock()"></div>'
+    + '<button class="btn btn-primary btn-block" onclick="adminUnlock()">Enter Admin</button>'
+    + '</div></div>';
+}
+function adminUnlock(){
+  var v = document.getElementById('adminPass').value;
+  if(v===ADMIN_PASSCODE){ sessionStorage.setItem(ADMIN_SESSION_KEY,'1'); render(); }
+  else toast('Incorrect passcode.','err');
+}
+function adminLogout(){ sessionStorage.removeItem(ADMIN_SESSION_KEY); location.hash=''; }
+
+var ADMIN_TAB = 'new';
+var ADMIN_FILTER = 'all';
+function renderAdminDashboard(app){
+  var companies = DB.companies.slice().sort(function(a,b){return new Date(b.updatedAt)-new Date(a.updatedAt);});
+  var changeReqs = DB.changeRequests.slice().sort(function(a,b){return new Date(b.createdAt)-new Date(a.createdAt);});
+
+  var newSubs = companies.filter(function(c){return c.status==='submitted'||c.status==='under_review';});
+  var pendingCR = changeReqs.filter(function(r){return r.status==='pending'||r.status==='under_review';});
+
+  var h = '<div class="wrap wrap-wide">';
+  h += '<div class="pagehead"><div><h1>Admin Dashboard</h1><div class="sub">Review new submissions and change requests.</div></div><button class="btn btn-ghost btn-sm" onclick="adminLogout()">Log Out</button></div>';
+
+  h += '<div class="stat-row">'
+     + '<div class="stat"><div class="num">'+companies.length+'</div><div class="lbl">Total Companies</div></div>'
+     + '<div class="stat"><div class="num">'+newSubs.length+'</div><div class="lbl">New Submissions</div></div>'
+     + '<div class="stat"><div class="num">'+pendingCR.length+'</div><div class="lbl">Pending Changes</div></div>'
+     + '<div class="stat"><div class="num">'+companies.filter(function(c){return c.status==='approved';}).length+'</div><div class="lbl">Approved</div></div>'
+     + '</div>';
+
+  h += '<div class="tabs">'
+     + tabBtn('new','New Submissions ('+newSubs.length+')')
+     + tabBtn('changes','Change Requests ('+pendingCR.length+')')
+     + tabBtn('all','All Companies ('+companies.length+')')
+     + '</div>';
+
+  h += '<div id="adminTabBody">';
+  if(ADMIN_TAB==='new') h += adminListCompanies(newSubs, true);
+  if(ADMIN_TAB==='changes') h += adminListChangeRequests(changeReqs);
+  if(ADMIN_TAB==='all') h += adminAllCompaniesView(companies);
+  h += '</div></div>';
+  app.innerHTML = h;
+}
+function tabBtn(k,l){ return '<div class="tab'+(ADMIN_TAB===k?' active':'')+'" onclick="adminSetTab(\''+k+'\')">'+l+'</div>'; }
+function adminSetTab(k){ ADMIN_TAB=k; ADMIN_FILTER='all'; renderAdminDashboard(document.getElementById('app')); }
+function adminListCompanies(list){
+  if(!list.length) return '<div class="empty card"><div class="big">📭</div><p>Nothing here right now.</p></div>';
+  var h='';
+  list.forEach(function(c){
+    var name = c.approvedName || c.proposedNames[0].name || 'Untitled';
+    h += '<div class="co-card" onclick="location.hash=\'admin/company/'+c.id+'\'"><div><h3>'+esc(name)+'</h3><div class="meta">'+esc(c.applicantName||'')+' · '+esc(c.legalForm||'')+' · Submitted '+fmtDate(c.submittedAt)+'</div></div><span class="badge badge-'+c.status+'">'+STATUS_LABEL[c.status]+'</span></div>';
+  });
+  return h;
+}
+function adminAllCompaniesView(companies){
+  var filters = ['all','draft','submitted','under_review','approved','rejected'];
+  var h = '<div class="filter-row">'+filters.map(function(f){
+    return '<button class="pillbtn'+(ADMIN_FILTER===f?' active':'')+'" onclick="adminSetFilter(\''+f+'\')">'+(f==='all'?'All':STATUS_LABEL[f])+'</button>';
+  }).join('')+'</div>';
+  var filtered = ADMIN_FILTER==='all' ? companies : companies.filter(function(c){return c.status===ADMIN_FILTER;});
+  h += adminListCompanies(filtered);
+  return h;
+}
+function adminSetFilter(f){ ADMIN_FILTER=f; renderAdminDashboard(document.getElementById('app')); }
+function adminListChangeRequests(list){
+  if(!list.length) return '<div class="empty card"><div class="big">📭</div><p>No change requests yet.</p></div>';
+  var h='';
+  list.forEach(function(r){
+    var c = getCompany(r.companyId);
+    h += '<div class="co-card" onclick="location.hash=\'admin/change/'+r.id+'\'"><div><h3 style="font-size:.95rem;">'+CR_TYPES[r.type].icon+' '+CR_TYPES[r.type].label+'</h3><div class="meta">'+esc(c?(c.approvedName||c.proposedNames[0].name):'Unknown company')+' · Filed '+fmtDate(r.createdAt)+'</div></div><span class="badge badge-'+(r.status==='approved'?'approved':r.status==='rejected'?'rejected':'pending')+'">'+STATUS_LABEL[r.status]+'</span></div>';
+  });
+  return h;
+}
+
+function renderAdminCompany(app, id){
+  var c = getCompany(id);
+  if(!c){ app.innerHTML = '<div class="wrap"><div class="notebox red">Company not found.</div></div>'; return; }
+  var sh = shareholdersOf(id);
+  var crs = changeRequestsOf(id);
+  var h = '<div class="wrap wrap-wide">';
+  h += '<button class="linklike" style="margin-bottom:14px;" onclick="location.hash=\'admin\'">← Admin Dashboard</button>';
+  h += '<div class="pagehead"><div><h1>'+esc(c.approvedName||c.proposedNames[0].name)+'</h1><div class="sub">'+esc(c.legalForm||'')+' · Submitted by '+esc(c.applicantName||'—')+' ('+esc(c.applicantEmail||'—')+', '+esc(c.applicantPhone||'—')+')</div></div><span class="badge badge-'+c.status+'">'+STATUS_LABEL[c.status]+'</span></div>';
+
+  h += '<div class="row2">';
+  h += '<div class="card"><div class="section-title">Proposed Names</div>'+c.proposedNames.map(function(n,i){return '<p>'+(i+1)+'. '+esc(n.name||'—')+'</p>';}).join('')+'</div>';
+  h += '<div class="card"><div class="section-title">Business Activities</div>'+(c.selectedActivities.length?c.selectedActivities.map(function(a){return '<p>'+esc(a.name)+' <span class="hint">('+esc(a.code)+')</span></p>';}).join(''):'<p class="hint">None</p>')+'</div>';
+  h += '</div>';
+
+  h += '<div class="card"><div class="section-title">Shareholders</div><div style="overflow-x:auto;"><table class="tbl"><thead><tr><th>Name</th><th>Nationality</th><th>ID Type</th><th>ID Number</th><th>Ownership</th><th>Signatory</th><th>Document</th></tr></thead><tbody>';
+  sh.forEach(function(s){
+    h += '<tr><td>'+esc(s.fullName)+'</td><td>'+esc(s.nationality||'—')+'</td><td>'+(s.idType==='passport'?'Passport':'National ID')+'</td><td>'+esc(s.idNumber)+'</td><td>'+s.ownershipPercent+'%</td><td>'+(s.isAuthorizedSignatory?'Yes':'No')+'</td><td>'+(s.idDocDataUrl?'<a class="doclink" onclick="adminViewDoc(\''+s.id+'\')">View</a>':'<span style="color:var(--red);">Missing</span>')+'</td></tr>';
+  });
+  h += '</tbody></table></div></div>';
+
+  h += '<div class="card"><div class="section-title">Review & Decision</div>';
+  h += '<div class="field"><label>Status</label><select class="select" id="adminStatus">'
+     + Object.keys(STATUS_LABEL).filter(function(k){return k!=='pending';}).map(function(k){ return '<option value="'+k+'"'+(c.status===k?' selected':'')+'>'+STATUS_LABEL[k]+'</option>'; }).join('')
+     + '</select></div>';
+  h += '<div class="field"><label>Final Approved Name (if approving)</label><input class="input" id="adminApprovedName" value="'+esc(c.approvedName||c.proposedNames[0].name||'')+'"></div>';
+  h += '<div class="field"><label>Registration Number</label><input class="input" id="adminRegNo" value="'+esc(c.registrationNumber||'')+'"></div>';
+  h += '<div class="field"><label>Admin Notes (visible to applicant)</label><textarea class="textarea" id="adminNotes">'+esc(c.adminNotes||'')+'</textarea></div>';
+  h += '<div class="btn-row"><button class="btn btn-primary" onclick="adminSaveCompany(\''+c.id+'\')">Save Changes</button></div>';
+  h += '</div>';
+
+  h += '<div class="card"><div class="section-title">Change Requests</div>'+(crs.length?adminListChangeRequests(crs):'<p class="hint">None yet.</p>')+'</div>';
+
+  h += '</div>';
+  app.innerHTML = h;
+}
+function adminViewDoc(shareholderId){
+  var s = DB.shareholders.filter(function(x){return x.id===shareholderId;})[0];
+  if(!s || !s.idDocDataUrl) return;
+  var w = window.open('');
+  if(!w){ toast('Please allow pop-ups to view documents.','err'); return; }
+  if(s.idDocIsImage) w.document.write('<title>'+esc(s.fullName)+' — ID Document</title><body style="margin:0;background:#111;display:flex;align-items:center;justify-content:center;min-height:100vh;"><img src="'+s.idDocDataUrl+'" style="max-width:100%;max-height:100vh;"></body>');
+  else w.document.write('<title>'+esc(s.fullName)+' — ID Document</title><iframe src="'+s.idDocDataUrl+'" style="border:none;width:100vw;height:100vh;"></iframe>');
+}
+function adminSaveCompany(id){
+  var c = getCompany(id);
+  c.status = val('adminStatus');
+  c.approvedName = val('adminApprovedName');
+  c.registrationNumber = val('adminRegNo');
+  c.adminNotes = val('adminNotes');
+  c.updatedAt = nowISO();
+  saveDB();
+  toast('Saved.','ok');
+  render();
+}
+
+function renderAdminChange(app, id){
+  var r = getChangeRequest(id);
+  if(!r){ app.innerHTML = '<div class="wrap"><div class="notebox red">Change request not found.</div></div>'; return; }
+  var c = getCompany(r.companyId);
+  var h = '<div class="wrap">';
+  h += '<button class="linklike" style="margin-bottom:14px;" onclick="location.hash=\'admin\'">← Admin Dashboard</button>';
+  h += '<div class="pagehead"><div><h1>'+CR_TYPES[r.type].icon+' '+CR_TYPES[r.type].label+'</h1><div class="sub">'+esc(c?(c.approvedName||c.proposedNames[0].name):'')+' · Filed '+fmtDateTime(r.createdAt)+'</div></div><span class="badge badge-'+(r.status==='approved'?'approved':r.status==='rejected'?'rejected':'pending')+'">'+STATUS_LABEL[r.status]+'</span></div>';
+
+  h += '<div class="card">'+renderChangeCompare(r,c)+'</div>';
+
+  if(r.status==='pending' || r.status==='under_review'){
+    h += '<div class="card"><div class="section-title">Decision</div>';
+    h += '<div class="field"><label>Admin Notes</label><textarea class="textarea" id="crAdminNotes">'+esc(r.adminNotes||'')+'</textarea></div>';
+    h += '<div class="btn-row">'
+       + '<button class="btn btn-green" onclick="adminApproveChange(\''+r.id+'\')">Approve & Apply</button>'
+       + '<button class="btn btn-danger" onclick="adminRejectChange(\''+r.id+'\')">Reject</button>'
+       + '</div></div>';
+  } else {
+    h += '<div class="notebox'+(r.status==='approved'?' blue':' red')+'">This request was already <b>'+STATUS_LABEL[r.status]+'</b>'+(r.adminNotes?': '+esc(r.adminNotes):'')+'.</div>';
+  }
+  h += '</div>';
+  app.innerHTML = h;
+}
+function renderChangeCompare(r,c){
+  var h = '<div class="section-title">Requested Change</div>';
+  if(r.type==='name_change'){
+    h += '<div class="compare"><div class="box"><h4>Current</h4>'+c.proposedNames.map(function(n,i){return '<p>'+(i+1)+'. '+esc(n.name||'—')+'</p>';}).join('')+'</div>'
+       + '<div class="box"><h4>Requested</h4>'+r.details.newNames.map(function(n,i){return '<p>'+(i+1)+'. '+esc(n.name||'—')+'</p>';}).join('')+(r.details.reason?'<p class="hint">Reason: '+esc(r.details.reason)+'</p>':'')+'</div></div>';
+  } else if(r.type==='activity_add'){
+    h += '<p>Add:</p>'+r.details.activities.map(function(a){return '<p>+ '+esc(a.name)+'</p>';}).join('');
+  } else if(r.type==='activity_remove'){
+    h += '<p>Remove:</p>'+r.details.activities.map(function(a){return '<p>− '+esc(a.name)+'</p>';}).join('');
+  } else if(r.type==='shareholder_change'){
+    var d = r.details;
+    h += '<p><b>Action:</b> '+(d.action==='add'?'Add new shareholder':d.action==='edit'?'Edit existing shareholder':'Remove shareholder')+'</p>';
+    if(d.action!=='add'){
+      var target = DB.shareholders.filter(function(s){return s.id===d.targetShareholderId;})[0];
+      h += '<p><b>Shareholder:</b> '+esc(target?target.fullName:'Unknown')+'</p>';
+    }
+    if(d.action!=='remove'){
+      var s = d.shareholder;
+      h += '<div class="box" style="margin-top:10px;"><p>Name: '+esc(s.fullName)+'</p><p>Nationality: '+esc(s.nationality||'—')+'</p><p>ID: '+(s.idType==='passport'?'Passport':'National ID')+' '+esc(s.idNumber)+'</p><p>Ownership: '+s.ownershipPercent+'%</p><p>Signatory: '+(s.isAuthorizedSignatory?'Yes':'No')+'</p>'
+         + (s.idDocDataUrl ? '<p><a class="doclink" onclick="adminViewChangeDoc(\''+r.id+'\')">View Document</a></p>' : '')
+         + '</div>';
+    }
+  }
+  return h;
+}
+function adminViewChangeDoc(rid){
+  var r = getChangeRequest(rid);
+  var s = r.details.shareholder;
+  if(!s || !s.idDocDataUrl) return;
+  var w = window.open('');
+  if(!w){ toast('Please allow pop-ups to view documents.','err'); return; }
+  if(s.idDocIsImage) w.document.write('<img src="'+s.idDocDataUrl+'" style="max-width:100%;">');
+  else w.document.write('<iframe src="'+s.idDocDataUrl+'" style="border:none;width:100vw;height:100vh;"></iframe>');
+}
+function adminRejectChange(id){
+  var r = getChangeRequest(id);
+  r.adminNotes = val('crAdminNotes');
+  r.status = 'rejected';
+  r.updatedAt = nowISO();
+  saveDB();
+  toast('Change request rejected.','ok');
+  render();
+}
+function adminApproveChange(id){
+  var r = getChangeRequest(id);
+  var c = getCompany(r.companyId);
+  if(r.type==='name_change'){
+    c.proposedNames = r.details.newNames;
+  } else if(r.type==='activity_add'){
+    r.details.activities.forEach(function(a){
+      if(!c.selectedActivities.some(function(x){return x.code===a.code;})) c.selectedActivities.push(a);
+    });
+  } else if(r.type==='activity_remove'){
+    var removeCodes = r.details.activities.map(function(a){return a.code;});
+    c.selectedActivities = c.selectedActivities.filter(function(a){return removeCodes.indexOf(a.code)===-1;});
+  } else if(r.type==='shareholder_change'){
+    var d = r.details;
+    if(d.action==='add'){
+      var s = JSON.parse(JSON.stringify(d.shareholder));
+      s.id = uid(); s.companyId = c.id;
+      DB.shareholders.push(s);
+    } else if(d.action==='edit'){
+      var idx = DB.shareholders.findIndex(function(x){return x.id===d.targetShareholderId;});
+      if(idx>-1){ var keepId=DB.shareholders[idx].id; DB.shareholders[idx] = Object.assign({}, d.shareholder, {id:keepId, companyId:c.id}); }
+    } else if(d.action==='remove'){
+      DB.shareholders = DB.shareholders.filter(function(x){return x.id!==d.targetShareholderId;});
+    }
+    var total = shareholdersOf(c.id).reduce(function(t,s){return t+(parseFloat(s.ownershipPercent)||0);},0);
+    if(Math.round(total*100)/100 !== 100) toast('Applied — note ownership now totals '+Math.round(total*100)/100+'%, not 100%. You may want to follow up.','err');
+  }
+  r.status = 'approved';
+  r.updatedAt = nowISO();
+  c.updatedAt = nowISO();
+  saveDB();
+  toast('Change approved and applied.','ok');
+  render();
+}
+
+/* ---------------- init ---------------- */
+render();
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('sw.js').catch(function(){});
+  });
+}
+</script>
+</body>
+</html>
